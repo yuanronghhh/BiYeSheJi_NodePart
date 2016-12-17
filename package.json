@@ -1,0 +1,28 @@
+{
+  "name": "node_part",
+  "version": "1.0.0",
+  "description": "前端: Vue.js + materialize.js + JQuery.js 编写的智能点餐系统  \r 后端: Express.js + MongoDB + Socket.io, Django + MySQL",
+  "main": "app.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.5",
+    "express": "^4.14.0",
+    "express-session": "^1.14.2",
+    "jshint": "^2.9.4",
+    "mocha": "^3.2.0",
+    "morgan": "^1.7.0",
+    "should": "^11.1.2",
+    "supertest": "^2.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
