@@ -5,10 +5,10 @@ var should  = require('should');
 
 describe('site.index', function(){
 
-  it('should get json message', function(done){
+  it('should get html page', function(done){
     request(app)
       .get('/')
-      .expect('content-type', /json/)
+      .expect('content-type', /html/)
       .expect(200)
       .end(done);
   });

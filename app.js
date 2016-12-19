@@ -11,10 +11,12 @@ var config       = require('./config/config');
 
 var app          = express();
 
+app.set('x-powered-by', false);
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(config.session_secret));
+
 app.use(express.static(path.join(__dirname, '/public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
