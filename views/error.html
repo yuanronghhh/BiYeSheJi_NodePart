@@ -1,8 +1,0 @@
-<!DOCTYPE html>
-<% if (typeof(message) !== 'undefined') {%>
-<h1><%= message %></h1>
-<%}%>
-<% if(typeof(error) !== 'undefined'){%>
-  <h2><%= error.status %></h2>
-  <pre><%= error.stack %></pre>
-<%}%>

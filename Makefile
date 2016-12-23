@@ -7,12 +7,19 @@ test:
 		--timeout $(TEST_TIME_OUT) \
 		--reporter $(MOCHA_REPORTER) \
 		$(TEST_FILE)
+debug-exp:
+	@node --inspect --debug app.js
 debug:
-	@node --debug --inspect app.js
-database:
+	@start cmd /k node --debug app.js localhost:5858
+	@sleep 2
+	@node debug localhost:5858
+ins:
+	@npm install $(p) --save
+db:
 	@start cmd /k redis-server
 	@start cmd /k mongod \
 		--dbpath=g:\mongodb\data
 run:
 	@node app.js
-.PHONY: test debug database run
+
+.PHONY: test debug db run in

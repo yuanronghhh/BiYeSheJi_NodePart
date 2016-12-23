@@ -1,9 +1,15 @@
 var app     = require('../app');
 var request = require('supertest');
+var tools   = require('../common/tools');
 var should  = require('should');
 
 
-describe('登录', function(){
+describe('login', function(){
+  var login_user = {
+    "account": "635044633@qq.com",
+    "password": "121212"
+  };
+
   it('should get error without no data', function(done){
     request(app)
       .post('/login')
@@ -11,19 +17,33 @@ describe('登录', function(){
       .end(done);
   });
 
+  it('should login', function(done){
+    request(app)
+      .post('/login')
+      .send(login_user)
+      .expect(200)
+      .end(function(err, res){
+        done(err);
+        console.log(res.body);
+        res.body.should.containEql("成功");
+      });
+  });
+
 });
 
-describe('注册', function(){
+describe('signup', function(){
   var wrong_data = {
     "name" : "djlasdj",
     "pass" : "djslajd",
     "email": "",
   };
+
   var right_data = {
-    "name"        : "dlkasjdlj",
-    "pass"        : "djslajd",
-    "email"       : "635044633@qq.com",
-    "phone_number": "18120548752"
+    "name"        : "nice",
+    "password"    : "121212",
+    "email"       : "6350446@qq.com",
+    "phone_number": "18120583139",
+    "gender"      : "男",
   };
 
   it('should signup',function(done){
@@ -32,22 +52,9 @@ describe('注册', function(){
       .send(right_data)
       .expect(200)
       .end(function(err, res){
-        if(err){
-          return done(err);
-        }
-        var cookie = res.header['set-cookie'];
-
-        request(app)
-          .get('/signup')
-          .set('Cookie', cookie)
-          .end(function(err, res){
-            if(err){
-              return done(err);
-            }
-            res.body.should.containEql(ok);
-          });
+        console.log(res.body);
+        done(err);
       });
-
   });
 
   it('should get error when no data packed in', function(done){
@@ -59,7 +66,7 @@ describe('注册', function(){
           console.log(err);
         }
         console.log(res.body);
-        done();
+        done(err);
       });
   });
 
@@ -69,11 +76,8 @@ describe('注册', function(){
       .send(wrong_data)
       .expect(403)
       .end(function(err, res){
-        if(err){
-          console.log(err);
-        }
         console.log(res.body);
-        done();
+        done(err);
       });
   });
 
@@ -82,5 +86,8 @@ describe('注册', function(){
 describe('updatePass', function(){
 });
 
-describe('user', function(){
+describe('resetPass', function(){
+});
+
+describe('activeUser', function(){
 });

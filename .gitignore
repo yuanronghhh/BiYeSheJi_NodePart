@@ -2,3 +2,4 @@ docs/
 public/
 node_modules/
 tmp/
+.tern-project

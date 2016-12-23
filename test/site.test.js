@@ -3,7 +3,7 @@ var request = require('supertest');
 var should  = require('should');
 
 
-describe('site.index', function(){
+describe('home', function(){
 
   it('should get html page', function(done){
     request(app)
@@ -20,6 +20,12 @@ describe('site.index', function(){
       .end(done);
   });
 
-  it('should get about page');
+});
 
+describe('about', function(){
+  it('should get about page');
+});
+
+describe('search', function(){
+  it('should get search result');
 });

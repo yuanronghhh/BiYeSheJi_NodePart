@@ -1,8 +1,12 @@
-var bcrypt = require('bcryptjs');
-var crypto = require('crypto');
+var bcrypt     = require('bcryptjs');
+var crypto     = require('crypto');
+var config     = require('../config/config');
+var validator  = require('validator');
+var nodemailer = require('nodemailer');
 
 function Tools() {
 }
+
 /**
  * 获取一定长度数字字符串。
  */
@@ -44,12 +48,16 @@ Tools.prototype.bcompare = function (str, passhash, callback) {
 };
 
 /**
- * 获取hash字符串
+ * 根据str获取hash字符串, 如果str不存在则计算随机字符串后返回
  */
-Tools.prototype.hashString = function(){
-  return crypto.createHash("md5").update(Math.random().toString()).digest('hex').substring(0,24);
+Tools.prototype.hashString = function(str){
+  var st = str || Math.random().toString();
+  return crypto.createHash("md5").update(st).digest('hex').substring(0,24);
 };
 
+/**
+ * 判断是否是含有学字
+ */
 Tools.prototype.isSchool = function(school){
   var sh = school || '';
   var sh_regx = /.*学.*/;
@@ -59,4 +67,29 @@ Tools.prototype.isSchool = function(school){
   return false;
 };
 
-module.exports = Tools;
+/**
+ * content为转换过的网页
+ * 报错返回null,并记录
+ */
+Tools.prototype.sendEmail = function(receiver, content){
+  config.mailOptions.to   = receiver;
+  config.mailOptions.html = content;
+
+  return true;
+  //var transporter = nodemailer.createTransport(config.smtpConfig);
+  //transporter.sendMail(config.mailOptions, function(err, info){
+  //  if(err){
+  //    console.log(err.response);
+  //    return false;
+  //  }
+  //  console.log(info);
+  //  return true;
+  //});
+};
+
+Tools.prototype.isOutOfDate = function(date, delta){
+  var deadline = (new Date(Date.now() - delta)).toLocaleString();
+  return validator.isAfter(deadline, date);
+};
+
+module.exports = new Tools();

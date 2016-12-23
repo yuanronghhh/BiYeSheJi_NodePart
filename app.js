@@ -12,6 +12,7 @@ var config       = require('./config/config');
 var app          = express();
 
 app.set('x-powered-by', false);
+app.set('trust proxy', ['loopback']);
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -30,19 +31,18 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
+app.use(function(err, req, res, next){
+  if (req.xhr){
+    res.status(500).json({
+      err: err.message
     });
-  });
-}
+  }
+  next(err);
+});
 
 app.use(function(err, req, res, next) {
   res.status(err.status || 500);
-  res.render('error', {
+  res.json({
     message: err.message,
     error: {}
   });

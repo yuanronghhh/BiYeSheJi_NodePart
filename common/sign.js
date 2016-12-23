@@ -1,4 +1,5 @@
-var Form = require("./form");
+var Form      = require("./form");
+var User      = require('../proxys/user');
 
 SignForm.prototype = new Form();
 
@@ -9,42 +10,47 @@ function SignForm(data){
 }
 
 SignForm.prototype.signup = function(){
-  var email         = this.data.email;
-  var name          = this.data.name;
-  var pass          = this.data.pass;
-  var phone_number  = this.data.phone_number;
-
-  this.form_validator(phone_number, "phone_number");
-  this.form_validator(name, "login_name");
-  this.form_validator(email, "email");
-  this.form_validator(pass, "pass");
+  var attr = [
+    "email",
+    "name",
+    "phone_number",
+    "password",
+    "gender"
+  ];
+  this.validateData(attr, this.data);
 };
 
 SignForm.prototype.activeUser = function() {
+  var attr = [
+    'email',
+    'active_key',
+    'create_at'
+  ];
+  this.validateData(attr, this.data);
 };
 
 SignForm.prototype.login = function() {
-  var phone_number = this.data.phone_number;
-  var pass         = this.data.pass;
-
-  this.form_validator(phone_number, "phone_number");
-  this.form_validator(pass, "pass");
+  var attr = [
+    "account",
+    "password"
+  ];
+  this.validateData(attr, this.data);
 };
 
 SignForm.prototype.updatePass = function() {
-  var old_pass = this.data.old_pass;
-  var new_pass = this.data.new_pass;
 
-  this.form_validator(old_pass, "old_pass");
-  this.form_validator(new_pass, "new_pass");
 };
 
 SignForm.prototype.resetPass = function() {
-  var email     = this.data.email;
-  var reset_key = this.data.reset_key;
+};
 
-  this.form_validator(email, "email");
-  this.form_validator(reset_key, "reset_key");
+SignForm.prototype.reActive = function() {
+  var attr = [
+    "email",
+    "name",
+    "gender",
+  ];
+  this.validateData(attr, this.data);
 };
 
 module.exports = function(data){
