@@ -1,8 +1,6 @@
 var bcrypt     = require('bcryptjs');
 var crypto     = require('crypto');
-var config     = require('../config/config');
 var validator  = require('validator');
-var nodemailer = require('nodemailer');
 
 function Tools() {
 }
@@ -65,26 +63,6 @@ Tools.prototype.isSchool = function(school){
     return true;
   }
   return false;
-};
-
-/**
- * content为转换过的网页
- * 报错返回null,并记录
- */
-Tools.prototype.sendEmail = function(receiver, content){
-  config.mailOptions.to   = receiver;
-  config.mailOptions.html = content;
-
-  return true;
-  //var transporter = nodemailer.createTransport(config.smtpConfig);
-  //transporter.sendMail(config.mailOptions, function(err, info){
-  //  if(err){
-  //    console.log(err.response);
-  //    return false;
-  //  }
-  //  console.log(info);
-  //  return true;
-  //});
 };
 
 Tools.prototype.isOutOfDate = function(date, delta){

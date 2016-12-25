@@ -44,3 +44,15 @@ exports.checkBlock = function(user){
   }
   return false;
 };
+
+exports.changePassword = function(user, new_pass, cb){
+  var err = new Error("用户未激活");
+  var is_admin = user.is_admin;
+  if(user.status === 0 && !is_admin){
+    return cb(err);
+  }
+
+  user.password = new_pass;
+  user.save().catch(cb);
+  return cb('');
+};

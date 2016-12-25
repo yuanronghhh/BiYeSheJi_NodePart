@@ -5,7 +5,7 @@ var ejs        = require('ejs');
 var config     = require('../config/config');
 var tools      = require('../common/tools');
 
-exports.preEmail = function(form, next, cb){
+exports.preActiveEmail = function(form, next, cb){
   var email      = form.cleaned_data.email;
   var name       = form.cleaned_data.name;
   var is_man     = form.cleaned_data.gender === '男'? 
@@ -51,4 +51,8 @@ exports.preEmail = function(form, next, cb){
       content: content,
     });
   });
+};
+
+exports.preAdminEmail = function(form, next, cb){
+
 };

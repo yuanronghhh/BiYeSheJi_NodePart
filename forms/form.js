@@ -1,5 +1,5 @@
 var validator = require("validator");
-var tools     = require("./tools");
+var tools     = require("../common/tools");
 
 function Form(){
   this.is_valid = true;

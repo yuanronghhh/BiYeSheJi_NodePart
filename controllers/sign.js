@@ -5,9 +5,11 @@ var ejs            = require('ejs');
 var fs             = require('fs');
 var auth           = require('../middlewares/auth');
 var config         = require('../config/config');
-var signForm       = require('../common/sign');
+var signForm       = require('../forms/sign');
 var User           = require('../proxys/user');
-var common         = require('./common');
+var logger         = require('../common/logger');
+var preEmail       = require('../common/pre_email');
+var mail           = require('../common/mail');
 var tools          = require('../common/tools');
 
 exports.reActive = function(req, res, next){
@@ -16,18 +18,33 @@ exports.reActive = function(req, res, next){
   if(!form.is_valid){
     return res.status(403).json(form.error);
   }
-  common.preEmail(form, next, function(info){
-    var has_send = tools.sendEmail(info.email, info.content);
-    if(!has_send){
-      res.status(404).json({
-        "message": "网络暂时不稳定, 请稍后重试。"
-      });
-    } else {
-      res.status(200).json({
-        "message": "已经成功发送邮件, 请注意查收!"
+
+  var email = form.cleaned_data.email;
+  User.getUserByEmail(email, function(err, user){
+    if(err) {
+      logger.fatal('cannot reactive a user');
+      return next(err);
+    }
+    if(!user){
+      logger.warn('cannot reactive a user');
+      return res.status(404).json({
+        "message": "无法找到该账户, 不能重新激活"
       });
     }
+
+    preEmail.preActiveEmail(form, next, function(info){
+      var has_send = mail.sendEmail(info.email, info.content);
+      if(!has_send){
+        return res.status(404).json({
+          "message": "网络暂时不稳定, 请稍后重试。"
+        });
+      }
+      return res.status(200).json({
+        "message": "已经成功发送邮件, 请注意查收!"
+      });
+    });
   });
+
 };
 
 exports.signup = function (req, res, next) {
@@ -61,12 +78,12 @@ exports.signup = function (req, res, next) {
     }));
   });
 
-  common.preEmail(form, next, function(info){
+  preEmail.preActiveEmail(form, next, function(info){
     ep.emit('send email', info.email, info.content);
   });
 
   ep.all(['send email', 'checked'], function(email, content){
-    tools.sendEmail(email, content);
+    mail.sendEmail(email, content);
     ep.emit('save user');
   });
 
@@ -76,6 +93,7 @@ exports.signup = function (req, res, next) {
       form.cleaned_data.password = passhash;
       User.createUser(form.cleaned_data, function(err){
         if(err){
+          logger.fatal('creat user error');
           return next(err);
         }
         res.status(200).json({
@@ -110,8 +128,12 @@ exports.login = function(req, res, next) {
   ep.fail(next);
 
   LoginMethod(account, function(err, user){
-    if(err) return next(err);
+    if(err) {
+      logger.fatal('user find error');
+      return next(err);
+    }
     if(!user){
+      logger.warn('cannot find user');
       res.status(422).json({
         "message": "抱歉, 用户不存在"
       });
@@ -123,7 +145,10 @@ exports.login = function(req, res, next) {
   ep.on('check user', ep.done(function(user){
     var passhash = user.password;
     tools.bcompare(password, passhash, function(err, bool) {
-      if(err) return next(err);
+      if(err) {
+        logger.error('compare pass error');
+        return next(err);
+      }
       if (!bool) {
         return res.status(422).json({
           "message": "账号或密码错误"

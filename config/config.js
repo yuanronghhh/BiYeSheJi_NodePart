@@ -35,6 +35,7 @@ var config = {
     "charset"    : "utf8_general_ci"  ,
     "debug"      : true               ,
   },
+  "debug"        : true               ,
   "redis"        : {
     "redis_host" : "127.0.0.1"        ,                                  //redis设置
     "redis_port" : 6379               ,

@@ -10,6 +10,7 @@ if(config.allow_sign_up) {
 }
 
 router.post('/login', sign.login);
+router.get('/config/', site.config);
 router.get('/active_user', sign.activeUser);
 router.post('/reactive', sign.reActive);
 router.get('/signout', sign.signOut);
