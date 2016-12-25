@@ -1,7 +1,7 @@
 var config = require('../config/config');
 
 exports.index = function(req, res){
-  res.render("index");
+  res.render("page/dist/index");
 };
 
 exports.config = function(req, res) {

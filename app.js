@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(config.session_secret));
 
-app.use(express.static(path.join(__dirname, 'views/static')));
+app.use(express.static(path.join(__dirname, 'views/page/dist')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 app.engine('html',require('ejs').renderFile);
