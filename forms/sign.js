@@ -38,10 +38,18 @@ SignForm.prototype.login = function() {
 };
 
 SignForm.prototype.updatePass = function() {
-
+  var attr = [
+    "new_pass",
+    "old_pass"
+  ];
+  this.validateData(attr, this.data);
 };
 
 SignForm.prototype.resetPass = function() {
+  var attr = [
+    "email",
+  ];
+  this.validateData(attr, this.data);
 };
 
 SignForm.prototype.reActive = function() {

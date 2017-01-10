@@ -32,7 +32,7 @@ exports.reActive = function(req, res, next){
       });
     }
 
-    preEmail.preActiveEmail(form, next, function(info){
+    preEmail.preActive(form, next, function(info){
       var has_send = mail.sendEmail(info.email, info.content);
       if(!has_send){
         return res.status(404).json({
@@ -44,7 +44,6 @@ exports.reActive = function(req, res, next){
       });
     });
   });
-
 };
 
 exports.signup = function (req, res, next) {
@@ -78,19 +77,19 @@ exports.signup = function (req, res, next) {
     }));
   });
 
-  preEmail.preActiveEmail(form, next, function(info){
-    ep.emit('send email', info.email, info.content);
+  preEmail.preActive(form, next, function(info){
+    ep.emit('send email', info);
   });
 
-  ep.all(['send email', 'checked'], function(email, content){
-    mail.sendEmail(email, content);
+  ep.all(['send email', 'checked'], function(info){
+    mail.sendEmail(info.email, info.content);
     ep.emit('save user');
   });
 
   ep.on('save user', function(){
     var pass = form.cleaned_data.password;
-    tools.bhash(pass, ep.done(function(passhash){
-      form.cleaned_data.password = passhash;
+    tools.bhash(pass, ep.done(function(pass_hash){
+      form.cleaned_data.password = pass_hash;
       User.createUser(form.cleaned_data, function(err){
         if(err){
           logger.fatal('creat user error');
@@ -109,8 +108,7 @@ exports.login = function(req, res, next) {
   var form  = signForm(req.body);
   form.login();
   if(!form.is_valid){
-    res.status(403).json(form.error);
-    return ;
+    return res.status(403).json(form.error);
   }
 
   var account, LoginMethod;
@@ -143,8 +141,8 @@ exports.login = function(req, res, next) {
   });
 
   ep.on('check user', ep.done(function(user){
-    var passhash = user.password;
-    tools.bcompare(password, passhash, function(err, bool) {
+    var pass_hash = user.password;
+    tools.bcompare(password, pass_hash, function(err, bool) {
       if(err) {
         logger.error('compare pass error');
         return next(err);
@@ -177,8 +175,7 @@ exports.activeUser = function(req, res, next){
   var form = signForm(req.query);
   form.activeUser();
   if(!form.is_valid){
-    res.status(403).json(form.error);
-    return ;
+    return res.status(403).json(form.error);
   }
 
   var ep         = new eventproxy();
@@ -227,7 +224,6 @@ exports.activeUser = function(req, res, next){
       });
     }));
   }));
-
 };
 
 exports.signOut = function (req, res, next) {
@@ -241,5 +237,102 @@ exports.signOut = function (req, res, next) {
 };
 
 exports.updatePass = function (req, res, next) {
+  var form = signForm(req.body);
+  form.updatePass();
+  if(!form.is_valid){
+    return res.status(403).json(form.error);
+  }
+  var new_pass = form.cleaned_data.new_pass;
+  var old_pass = form.cleaned_data.old_pass;
+  var user_id  = req.session.user.id;
+  var ep       = new eventproxy();
 
+  ep.fail(next);
+
+  User.getUserById(user_id, function(err, user){
+    if(!user){
+      return res.status(404).json({
+        "message": "未找到用户信息"
+      });
+    }
+    ep.emit('process pass', user, new_pass);
+  });
+  ep.on('process pass', function(user, new_pass){
+
+    var pass_hash = user.password;
+    tools.bcompare(old_pass, pass_hash, ep.done(function(bool){
+      if(!bool){
+        logger.warn('updatePass: password compare fail');
+        return res.status(422).json({
+          "message":"更新失败"
+        });
+      }
+
+      tools.bhash(new_pass, ep.done(function (pass_hash) {
+        ep.emit('update pass', user, pass_hash);
+      }));
+    }));
+  });
+  ep.on('update pass', function(user, pass_hash){
+
+    User.changePassword(user, pass_hash, function(err){
+      if (err) {
+        logger.fatal("updatePass save error");
+        return next(err);
+      }
+      return res.status(200).json({
+        "message": '您的密码已更新。'
+      });
+    });
+  });
+};
+
+exports.resetPass = function (req, res, next) {
+  var form = signForm(req.body || req.query);
+  form.resetPass();
+  if(!form.is_valid){
+    return res.status(403).json(form.error);
+  }
+  var ep    = new eventproxy();
+  var email = form.cleaned_data.email;
+
+  ep.fail(next);
+
+  User.getUserByEmail(email, ep.done(function(user){
+    if(!user){
+      logger.warn('resetPass: cannot get user');
+      return res.status(404).json({
+        "message":'找不到该用户,请注册'
+      });
+    }
+    ep.emit('reset pass', user);
+  }));
+  ep.on('reset pass', function(user){
+
+    var rs_pass = tools.getRandomVcode(8);
+    tools.bhash(rs_pass, ep.done(function(pass_hash){
+
+      User.changePassword(user, pass_hash, function(err){
+        if(err){
+          logger.fatal('resetPass: save error');
+          return res.status(422).json({
+            "message": "操作失败"
+          });
+        }
+        ep.emit('send email', rs_pass);
+      });
+    }));
+  });
+  ep.on('send email', function(rs_pass){
+
+    form.cleaned_data.rs_pass = rs_pass;
+    preEmail.preResetPass(form, next, function(info){
+      var has_send = mail.sendEmail(info.email, info.content);
+      if(has_send){
+        return res.status(200).json({
+          "message": "您好,重置信息已经发送到您的邮箱,请注意查收!"
+        });
+      }
+    });
+  });
 };

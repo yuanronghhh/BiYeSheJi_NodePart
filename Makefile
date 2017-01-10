@@ -15,10 +15,10 @@ debug-exp:
 	@node --inspect --debug $(MAIN)
 debug:
 	@start cmd /k node --debug $(MAIN) $(DEBUG_LISTEN)
-	@node debug $(DEBUG_LISTEN)
+	@node debug $(MAIN)
 debug-test:
 	@start cmd /k mocha --debug $(TEST_DIR)$(TDF) $(DEBUG_LISTEN)
-	@node debug $(DEBUG_LISTEN)
+	@node debug $(MAIN) $(DEBUG_LISTEN)
 ins:
 	@npm install $(p) --save
 db:
@@ -27,7 +27,7 @@ db:
 		--dbpath=g:\mongodb\data
 run:
 	@node $(MAIN)
-sm-update:
-	@git submodule sync --recursive
+page-sync:
+	@git submodule sync
 
-.PHONY: test debug db run in sm-update
+.PHONY: test debug db run in page-sync

@@ -8,13 +8,12 @@ function UserForm(data){
 
 UserForm.prototype = new Form();
 
-UserForm.prototype.index = function (){
+UserForm.prototype.create = function (){
+
 };
 
-UserForm.prototype.index = function (){
-};
+UserForm.prototype.update = function (){
 
-UserForm.prototype.settings = function (){
 };
 
 module.exports = function(data){

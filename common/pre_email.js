@@ -5,7 +5,7 @@ var ejs        = require('ejs');
 var config     = require('../config/config');
 var tools      = require('../common/tools');
 
-exports.preActiveEmail = function(form, next, cb){
+exports.preActive = function(form, next, cb){
   var email      = form.cleaned_data.email;
   var name       = form.cleaned_data.name;
   var is_man     = form.cleaned_data.gender === '男'? 
@@ -53,6 +53,13 @@ exports.preActiveEmail = function(form, next, cb){
   });
 };
 
-exports.preAdminEmail = function(form, next, cb){
+exports.preAdmin = function(form, next, cb){
 
+};
+
+exports.preResetPass = function(form, next, cb){
+  cb({
+    email: form.cleaned_data.email,
+    content: "<div>重置的密码为: "+ form.cleaned_data.rs_pass +"请及时更改<div>"
+  });
 };

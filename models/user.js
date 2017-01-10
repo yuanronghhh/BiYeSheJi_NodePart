@@ -6,14 +6,14 @@ function UserModel(){
   this.schema = {
     "name"         : {"type": Connection.STRING},
     "email"        : {"type": Connection.STRING,
-      "primaryKey": true,
       "validate"  : {
         "isEmail": true,
       }
     },
+    "gender"       : {"type": Connection.ENUM('男', '女')},
     "password"     : {"type": Connection.STRING},
     "status"       : {"type": Connection.INTEGER, defaultValue: 0}, //0,未激活,1已经激活
-    "phone_number" : {"type": Connection.STRING},
+    "phone_number" : {"type": Connection.STRING(11)},
     "create_at"    : {"type": Connection.DATE, defaultValue: Connection.NOW},
     "update_at"    : {"type": Connection.DATE, defaultValue: Connection.NOW},
   };

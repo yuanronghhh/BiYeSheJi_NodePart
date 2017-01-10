@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>邮件激活</title>
+  </head>
+  <body>
+    尊敬的<span><%= name %></span>
+    <% if (gender) { %>
+      <span>先生</span> 
+    <% } else { %>
+      <span>女士</span>
+    <% } %>:
+    <h4>
+      感谢您在 <a href="http://<%= link.domain %>/about"><i><%= link.domain %></i></a>注册，点击下面的链接以激活您的账号
+    </h4>
+
+    <div>
+      <a href="<%= link.active %>" ><%= link.active %></a>
+    </div>
+
+    <h4>您也可以手动复制下面的链接进行激活</h4>
+
+    <p>
+      链接: <%= link.active %>
+    </p>
+
+    <p>
+      接收人: <%= email %>
+    </p>
+
+    如果您已经激活过，您可以点击下面链接登录
+    <p>
+      <a href="http://<%= link.domain %>/login" >http://<%= link.domain %>/login</a>
+    </p>
+    <a href="http://<%= link.domain %>/about">感谢使用本产品!</a><br />
+    来自: <%= signature %> <br />
+    发送时间: <%= link.create_at %>
+  </body>
+</html>

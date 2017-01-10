@@ -9,11 +9,11 @@ function Form(){
  * 获取data中的值否则为空字符串''
  */
 Form.prototype.getProp = function(data, key){
-  var dt  = Object.hasOwnProperty.call(this.data, key) ?
-    this.data[key]
+  var dt  = Object.hasOwnProperty.call(data, key) ?
+    data[key]
     :  '';
 
-  return dt;
+    return dt;
 };
 
 Form.prototype.validateData = function(attr, data){
@@ -43,59 +43,84 @@ Form.prototype.formValidator = function(data, data_type){
     this.error.message = '信息不完整';
   }
   switch(data_type){
+    case "items_name":
+    case "items_price":
+      this.signError(
+        !tools.sepWithSpace(data, data_type),
+        "");
+      break;
+    case "keywords":
+      this.signError(
+        !tools.sepWithSpace(data),
+        '关键词请以空格分割',
+        data_type, data);
+      break;
+    case "description":
+      this.signError(
+        data.length < 1000 ? false: true,
+        '描述过长',
+        data_type, data);
+      break;
     case "create_at":
       this.signError(
-          !validator.isDate(data),
-          '抱歉, 日期格式不正确',
-          data_type, data);
+        !validator.isDate(data),
+        '抱歉, 日期格式不正确',
+        data_type, data);
       break;
     case "school":
       this.signError(
-          !tools.isSchool(data),
-          '抱歉,该不在服务范围',
-          data_type, data);
+        !tools.isSchool(data),
+        '请填写正确的学校信息',
+        data_type, data);
       break;
     case "sex":
     case "gender":
       this.signError(
-          data !== '男' && data !== '女',
-          '请正确选择性别',
-          data_type, data);
+        data !== '男' && data !== '女',
+        '请正确选择性别',
+        data_type, data);
+      break;
+    case "price":
+      this.signError(
+        !tools.isAppropriatePrice(data),
+        '抱歉,请输入合适的价格',
+        data_type, data);
       break;
     case "email":
       this.signError(
-          !validator.isEmail(data),
-          '请输入正确邮箱',
-          data_type, data);
+        !validator.isEmail(data),
+        '请输入正确邮箱',
+        data_type, data);
       break;
     case "mobile_phone":
     case "phone_number":
       this.signError(
-          !isPhoneNumber.test(data),
-          '请输入正确电话号码',
-          data_type, data);
+        !isPhoneNumber.test(data),
+        '请输入正确电话号码',
+        data_type, data);
       break;
     case "name":
     case "real_name":
     case "login_name":
       this.signError(
-          !name_regx.test(data),
-          '请输入正确的名称',
-          data_type, data);
+        !name_regx.test(data),
+        '请输入正确的名称',
+        data_type, data);
       break;
     case "active_key":
       this.signError(
-          typeof(data) !== "string",
-          "active_key不正确",
-          data_type, data);
+        typeof(data) !== "string",
+        "active_key不正确",
+        data_type, data);
       break;
     case "repass":
-    case "pass":
+    case "new_pass":
+    case "old_pass":
     case "password":
       this.signError(
-          !pass_regx.test(data),
-          '请输入合适的密码',
-          data_type, data);
+        !pass_regx.test(data),
+        '请输入合适的密码',
+        data_type, data);
       break;
     default:
       this.error.message = '信息不完整';

@@ -1,3 +1,4 @@
+var path   = require('path');
 var config = {
   "domain"                            : "localhost:3000",
   "port"                              : 3000,
@@ -5,10 +6,16 @@ var config = {
   "site_name"                         : "智能点餐系统",
   "description"                       : "a app for campus",
   "allow_sign_up"                     : true,
-  "auth_cookie_name"                  : "INeeding",
-  "session_secret"                    : "INeeding",
+  "auth_cookie_name"                  : "MindOrder",
+  "session_secret"                    : "MindOrder",
   "publish_valid_day"                 : 30 * 1000 * 60 * 60 * 24,        //发布有效时间30天
   "active_out_delta"                  : 24 * 60 * 60 * 1000,             //注册码过期时间,24小时
+  "status": {
+    "deactivated": 0,
+    "activated"  : 1,
+    "is_admin"   : 2,
+    "blocked"    : 3,
+  },
   "admins"                            : {
     "greyhound"  : true
   },
@@ -41,6 +48,7 @@ var config = {
     "redis_port" : 6379               ,
     "redis_db  " : 0,
   },
+  "upload_path"     : path.resolve("uploads"),
   "item_limit"      : 5,                                                 //物品或服务显示限制
   "msg_send_limit"  : 3,                                                 //短信发送次数限制
   "login_err_times" : 4,                                                 //登录错误次数限制
