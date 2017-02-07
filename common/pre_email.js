@@ -1,3 +1,4 @@
+"use strict";
 var fs         = require('fs');
 var path       = require('path');
 var eventproxy = require('eventproxy');
@@ -30,21 +31,27 @@ exports.preActive = function(form, next, cb){
   }));
 
   ep.all(['get active_key', 'get html'], function(active_key, html_content){
-    var active_link = "http://" + config.domain + "/active_user/?" +
-      "active_key=" + active_key + "&"+
+    var url = "/active_user/?active_key=" + active_key + "&"+
       "email=" + email + "&" +
       "create_at=" + create_at;
-    content = html_content({
+    var active_link = "http://" + config.domain + url;
+      var info = {
       "link": {
         "domain": config.domain,
         "active_key": active_key,
         "create_at": create_at,
-        "active": active_link
+        "active": active_link,
+        "url": url
       },
       "name": name,
       "signature": config.smtpConfig.auth.user,
       "gender": is_man,
       "email": email
+    }
+    var content = html_content(info);
+    // just test
+    fs.writeFile(path.join(__dirname, "../bin/gen_key.json"), JSON.stringify(info), function(err) {
+      console.log("write gen_key err(for test only) --> ", err);
     });
     cb({
       email: email,
@@ -58,8 +65,12 @@ exports.preAdmin = function(form, next, cb){
 };
 
 exports.preResetPass = function(form, next, cb){
-  cb({
+  var info =  {
     email: form.cleaned_data.email,
     content: "<div>重置的密码为: "+ form.cleaned_data.rs_pass +"请及时更改<div>"
+  };
+  fs.writeFile(path.join(__dirname, "../bin/gen_resetpass.json"), JSON.stringify(form.cleaned_data), function(err) {
+    console.log("write gen_key err(for test only) --> ", err);
   });
+  cb(info);
 };

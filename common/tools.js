@@ -1,20 +1,24 @@
+"use strict";
 var bcrypt     = require('bcryptjs');
 var crypto     = require('crypto');
 var validator  = require('validator');
 var logger     = require('./logger');
 var fs         = require('fs');
 var path       = require('path');
+var is         = require('is-type-of');
 
 function Tools() {
 }
 
 /**
  * 获取一定长度数字字符串。
+ * 如果length不存在,则长度为0-20之间
  */
 Tools.prototype.getRandomVcode = function(length){
   var Num = "";
-  for(var i=0; i< length; i++){
-    Num += Math.floor(Math.random(Math.random())*10);
+  var len = length || Math.floor(Math.random()*20);
+  for(var i = 0; i< len; i++){
+    Num += Math.floor(Math.random()*10);
     Num = Num.toString();
   }
   return Num;
@@ -118,5 +122,49 @@ Tools.prototype.sepWithSpace = function(data) {
     return false;
   }
 };
+
+/**
+ * config为{}对象
+ * 如果config中与extras中属性相同, 且后面的值为数组, 则拼接在后面
+ * 其他属性则为替换config中原始值
+ * 如果config中没有相应的属性,extras中的属性将添加进config
+ * 返回 config
+ */
+Tools.prototype.appendConfig = function(config, extras){
+  var keys = Object.keys(extras);
+  for(let i = 0; i < keys.length; i++) {
+    var attr = keys[i];
+    var type_satisfy =  !typeof(config[attr]) 
+      || this.getSameType(config[attr], extras[attr]) 
+      ?  true: false;
+    if(type_satisfy){
+      if (type_satisfy && Array.isArray(config[attr])) {
+        config[attr] = config[attr].concat(extras[attr]);
+      } else {
+        config[attr] = extras[attr];
+      }
+    }
+  }
+  return config;
+}
+
+/**
+ * 判断ori和ext是否为同一数据类型
+ */
+Tools.prototype.getSameType = function(ori, ext) {
+  var allow_type = [
+    "number",
+    "string",
+    "array",
+    "object"
+  ];
+  for(var i = 0; i < allow_type.length ;i++) {
+    var key = allow_type[i];
+    if(is[key](ori)&&is[key](ext)) {
+      return true;
+    }
+  }
+  return false;
+}
 
 module.exports = new Tools();

@@ -1,3 +1,4 @@
+"use strict";
 var validator = require("validator");
 var tools     = require("../common/tools");
 
@@ -46,81 +47,93 @@ Form.prototype.formValidator = function(data, data_type){
     case "items_name":
     case "items_price":
       this.signError(
-        !tools.sepWithSpace(data, data_type),
-        "");
+          !tools.sepWithSpace(data, data_type),
+          "");
+      break;
+    case "id":
+      this.signError(
+          !validator.isNumeric(data),
+          "id格式不正确",
+          data_type, data);
+      break;
+    case "search_words":
+      this.signError(
+          !(data.length > 1 && data.length < 50),
+          "请输入合适的关键词",
+          data_type, data);
       break;
     case "keywords":
       this.signError(
-        !tools.sepWithSpace(data),
-        '关键词请以空格分割',
-        data_type, data);
+          !tools.sepWithSpace(data),
+          '关键词请以空格分割',
+          data_type, data);
       break;
     case "description":
       this.signError(
-        data.length < 1000 ? false: true,
-        '描述过长',
-        data_type, data);
+          data.length < 1000 ? false: true,
+          '描述过长',
+          data_type, data);
       break;
     case "create_at":
       this.signError(
-        !validator.isDate(data),
-        '抱歉, 日期格式不正确',
-        data_type, data);
+          !validator.isDate(data),
+          '抱歉, 日期格式不正确',
+          data_type, data);
       break;
     case "school":
       this.signError(
-        !tools.isSchool(data),
-        '请填写正确的学校信息',
-        data_type, data);
+          !tools.isSchool(data),
+          '请填写正确的学校信息',
+          data_type, data);
       break;
     case "sex":
     case "gender":
       this.signError(
-        data !== '男' && data !== '女',
-        '请正确选择性别',
-        data_type, data);
+          data !== '男' && data !== '女',
+          '请正确选择性别',
+          data_type, data);
       break;
     case "price":
       this.signError(
-        !tools.isAppropriatePrice(data),
-        '抱歉,请输入合适的价格',
-        data_type, data);
+          !tools.isAppropriatePrice(data),
+          '抱歉,请输入合适的价格',
+          data_type, data);
       break;
     case "email":
       this.signError(
-        !validator.isEmail(data),
-        '请输入正确邮箱',
-        data_type, data);
+          !validator.isEmail(data),
+          '请输入正确邮箱',
+          data_type, data);
       break;
     case "mobile_phone":
     case "phone_number":
       this.signError(
-        !isPhoneNumber.test(data),
-        '请输入正确电话号码',
-        data_type, data);
+          !isPhoneNumber.test(data),
+          '请输入正确电话号码',
+          data_type, data);
       break;
     case "name":
     case "real_name":
     case "login_name":
       this.signError(
-        !name_regx.test(data),
-        '请输入正确的名称',
-        data_type, data);
+          !name_regx.test(data),
+          '请输入正确的名称',
+          data_type, data);
       break;
     case "active_key":
       this.signError(
-        typeof(data) !== "string",
-        "active_key不正确",
-        data_type, data);
+          typeof(data) !== "string",
+          "active_key不正确",
+          data_type, data);
       break;
     case "repass":
     case "new_pass":
     case "old_pass":
     case "password":
       this.signError(
-        !pass_regx.test(data),
-        '请输入合适的密码',
-        data_type, data);
+          !pass_regx.test(data),
+          '请输入合适的密码',
+          data_type, data);
       break;
     default:
       this.error.message = '信息不完整';
@@ -129,7 +142,6 @@ Form.prototype.formValidator = function(data, data_type){
   if(this.error.message){
     this.is_valid  = false;
   }
-
 };
 
 Form.prototype.signError = function(condition, message, data_type, data){
@@ -137,7 +149,7 @@ Form.prototype.signError = function(condition, message, data_type, data){
     this.error.message = message;
     this.error.key     = data_type;
   } else {
-    this.cleaned_data[data_type] = data;
+    this.cleaned_data[data_type] = String(data);
   }
 };
 

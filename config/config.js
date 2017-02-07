@@ -8,7 +8,6 @@ var config = {
   "allow_sign_up"                     : true,
   "auth_cookie_name"                  : "MindOrder",
   "session_secret"                    : "MindOrder",
-  "publish_valid_day"                 : 30 * 1000 * 60 * 60 * 24,        //发布有效时间30天
   "active_out_delta"                  : 24 * 60 * 60 * 1000,             //注册码过期时间,24小时
   "status": {
     "deactivated": 0,
@@ -49,7 +48,7 @@ var config = {
     "redis_db  " : 0,
   },
   "upload_path"     : path.resolve("uploads"),
-  "item_limit"      : 5,                                                 //物品或服务显示限制
+  "limits"          : 5,                                                 //分页限制
   "msg_send_limit"  : 3,                                                 //短信发送次数限制
   "login_err_times" : 4,                                                 //登录错误次数限制
   "reply_interval"  : 5 * 60 * 1000,                                     //5分钟之内不能回复两次

@@ -1,3 +1,4 @@
+"use strict";
 var Form      = require("./form");
 
 SiteForm.prototype = new Form();
@@ -10,7 +11,7 @@ function SiteForm(data){
 
 SiteForm.prototype.search = function(){
   var attr = [
-    'keywords'
+    'search_words'
   ];
   this.validateData(attr, this.data);
 };

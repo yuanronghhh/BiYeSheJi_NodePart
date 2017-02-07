@@ -19,7 +19,7 @@ router.post('/login', sign.login);
 router.post('/resetpass', auth.adminRequired, sign.resetPass);
 router.get('/active_user', sign.activeUser);
 router.post('/reactive', sign.reActive);
-router.get('/signout', auth.userRequired, sign.signOut);
+router.get('/signout', sign.signOut);
 router.post('/updatepass', auth.userRequired, sign.updatePass);
 
 router.post('/search', site.search);
@@ -29,7 +29,7 @@ router.post('/pic/deletepic', auth.adminRequired, site.deletePic);              
 
 router.get('/hotitems', item.hotItems);                                              // 提供热门的菜品
 
-router.post('/item/create', item.createItem);
+router.post('/item/create', auth.adminRequired, item.createItem);
 router.get('/item/getitems', auth.userRequired, item.getItems);                      // 获取所有菜品
 router.get('/item/:id/detail', auth.userRequired, item.getItem);                     // 获取菜品详情
 router.post('/item/:id/delete', auth.adminRequired, item.deleteItem);                // 删除菜品

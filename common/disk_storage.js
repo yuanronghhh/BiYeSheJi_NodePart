@@ -1,3 +1,4 @@
+"use strict";
 var fs         = require('fs');
 var eventproxy = require('eventproxy');
 var tools      = require('../common/tools');
@@ -9,10 +10,10 @@ var debug      = require('debug')("common/disk_storage");
  * 此处主要使用本地存储,若要使用云存储
  * 可以直接在外部定义destination中定义。
  */
-function getDestination(req, file, cb) {
+DiskStorage.prototype.getDestination = function(req, file, cb) {
   var user        = req.session.user;
   var user_name   = user.name;
-  var upload_path = path.join(this.upload_path,user_name);
+  var upload_path = path.join(this.upload_path, user_name);
   var name = this.getFilename('.jpg');
   tools.mkDir(upload_path, function(err) {
     if(err) {
@@ -25,7 +26,7 @@ function getDestination(req, file, cb) {
 
 function DiskStorage(opts){
   this.upload_path    =  path.join(config.upload_path, (opts.upload_path || ''));
-  this.getDestination = opts.destination || getDestination;
+  this.destination    = opts.destination || this.getDestination;
 }
 
 DiskStorage.prototype.getFilename = function(ext){
@@ -37,7 +38,7 @@ DiskStorage.prototype.getFilename = function(ext){
 };
 
 DiskStorage.prototype._handleFile = function _handleFile(req, file, cb) {
-  this.getDestination(req, file, function(err, path) {
+  this.destination(req, file, function(err, path) {
     if (err) {
       return cb(err);
     }
@@ -60,7 +61,7 @@ DiskStorage.prototype._removeFile = function (req, image_name, cb) {
   var pt = path.join(user_path, image_name);
   images = images.filter(function(value) {
     if(value === image_name){
-      return ;
+      return;
     }
     return value;
   });

@@ -1,3 +1,4 @@
+"use strict";
 var ItemModel  = require('../models/item');
 var Item       = ItemModel.Item;
 var config     = require('../config/config');
@@ -19,28 +20,43 @@ exports.createItem = function(data, cb){
   }).catch(cb);
 };
 
-exports.getItemById = function(id, cb){
-  var query = {
+function getItemByQuery(user, wh, cb) {
+  let query = {
     "attributes": attrs,
-    "where": _.merge({ status: config.status.activated }, {
-      "id": id
-    })
+    "where": _.merge({ "status": config.status.activated }, wh)
+  };
+  if(user.status === config.status.is_admin){
+    delete query.attributes;
+    delete query.where.status;
+  }
+  Item.findOne(query).then(function(item){
+    cb('', item);
+  }).catch(cb);
+}
+exports.getItemByQuery = getItemByQuery;
+
+exports.getItemById = function(id, cb){
+  let wh = {
+    "id": Number(id)
+  }
+  getItem(wh, cb);
+}
+
+function getItem(wh, cb){
+  let query = {
+    "where": wh
   };
   Item.findOne(query).then(function(item){
     cb('', item);
   }).catch(cb);
-};
+}
+exports.getItem = getItem;
 
 exports.getItemByName = function(name, cb){
-  var query = {
-    "attributes": attrs,
-    "where": _.merge({ status: config.status.activated }, {
-      "name": name
-    })
-  };
-  Item.findOne(query).then(function(item){
-    cb('', item);
-  }).catch(cb);
+  let wh = _.merge({ status: config.status.activated }, {
+    "name": name
+  })
+  getItem(wh, cb);
 };
 
 exports.activeItem = function(item, cb){
@@ -50,9 +66,9 @@ exports.activeItem = function(item, cb){
   return cb('');
 };
 
-function getItems(user, wh, cb) {
-  var query = {
-    "limit": config.item_limit,
+function getItemsByQuery(user, wh, cb) {
+  let query = {
+    "limit": config.limit,
     "attributes": attrs,
     "where": _.merge({status: config.status.activated}, wh)
   };
@@ -64,14 +80,33 @@ function getItems(user, wh, cb) {
     cb('', items);
   }).catch(cb);
 }
-exports.getItems = getItems;
+exports.getItemsByQuery = getItemsByQuery;
 
-function deleteItems(user, wh, cb){
+exports.deleteItemsByIds = function(ids, cb){
+  if(!Array.isArray(ids)){
+    return cb(new Error("ids is not array"));
+  }
+  let wh = {
+    "id":ids
+  }
+  deleteItemsByQuery(wh, cb);
+}
+
+function deleteItemsByQuery(wh, cb){
   Item.destroy({
-    where: wh
+    "where": wh
+  }).then(function(){
+    cb("");
   }).catch(cb);
 }
-exports.deleteItems = deleteItems;
+exports.deleteItemsByQuery = deleteItemsByQuery;
+
+exports.deleteItemById = function(id, cb) {
+  let wh = {
+    "id": Number(id)
+  };
+  deleteItemsByQuery(wh, cb);
+}
 
 exports.checkBlock = function(item){
   if(item.status === config.status.blocked){
@@ -91,12 +126,15 @@ exports.changeBlock = function(item, cb) {
 };
 
 exports.search = function(key, cb) {
-  var q = '%'+ key + '%';
-  var wh = {
+  let q = '%'+ key + '%';
+  let wh = {
     $or: [
       {name:{$like: q}}, 
       {description:{$like: q}}
     ]
   };
-  getItems({status:1}, wh, cb);
+  getItemsByQuery({status:1}, wh, cb);
 };
+
+exports.updateItem = function(item) {
+}

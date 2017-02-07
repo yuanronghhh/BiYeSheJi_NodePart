@@ -1,3 +1,4 @@
+"use strict";
 var Table      = require('./index');
 var Connection = Table.Connection;
 
@@ -8,13 +9,13 @@ function CommentModel(){
     "content"     : {"type": Connection.TEXT},
     "item_id"     : {"type": Connection.INTEGER,
       "reference" :{
-        "model": item,
-        "key": 'id'
+        "model": "item",
+        "key": "id"
       }
     },
     "user_id"     : {"type": Connection.INTEGER,
       "reference":{
-        "model": user,
+        "model": "user",
         "key": 'id'
       }
     },

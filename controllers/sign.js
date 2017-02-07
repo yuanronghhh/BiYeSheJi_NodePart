@@ -1,3 +1,4 @@
+"use strict";
 var eventproxy     = require('eventproxy');
 var validator      = require('validator');
 var path           = require('path');
@@ -27,7 +28,7 @@ exports.reActive = function(req, res, next){
     }
     if(!user){
       logger.warn('cannot reactive a user');
-      return res.status(404).json({
+      return res.status(422).json({
         "message": "无法找到该账户, 不能重新激活"
       });
     }
@@ -35,7 +36,7 @@ exports.reActive = function(req, res, next){
     preEmail.preActive(form, next, function(info){
       var has_send = mail.sendEmail(info.email, info.content);
       if(!has_send){
-        return res.status(404).json({
+        return res.status(422).json({
           "message": "网络暂时不稳定, 请稍后重试。"
         });
       }
@@ -63,10 +64,10 @@ exports.signup = function (req, res, next) {
         "message": "抱歉, 该邮箱已经被注册"
       });
     }
-    ep.emit('check name');
+    ep.emit('check name', user);
   }));
 
-  ep.on('check name', function(){
+  ep.on('check name', function(user){
     User.getUserByName(name, ep.done(function(user){
       if(user){
         return res.status(422).json({
@@ -92,7 +93,7 @@ exports.signup = function (req, res, next) {
       form.cleaned_data.password = pass_hash;
       User.createUser(form.cleaned_data, function(err){
         if(err){
-          logger.fatal('creat user error');
+          logger.fatal('creat user error --> ', err);
           return next(err);
         }
         res.status(200).json({
@@ -105,13 +106,15 @@ exports.signup = function (req, res, next) {
 };
 
 exports.login = function(req, res, next) {
+  cleanSession(req, res);
   var form  = signForm(req.body);
   form.login();
   if(!form.is_valid){
     return res.status(403).json(form.error);
   }
 
-  var account, LoginMethod;
+  var account;
+  var LoginMethod;
   var password = form.cleaned_data.password;
   var ep       = new eventproxy();
 
@@ -144,7 +147,7 @@ exports.login = function(req, res, next) {
     var pass_hash = user.password;
     tools.bcompare(password, pass_hash, function(err, bool) {
       if(err) {
-        logger.error('compare pass error');
+        logger.error('compare pass error -->', err);
         return next(err);
       }
       if (!bool) {
@@ -226,15 +229,19 @@ exports.activeUser = function(req, res, next){
   }));
 };
 
-exports.signOut = function (req, res, next) {
+function cleanSession(req, res){
   req.session.destroy();
   res.clearCookie(config.auth_cookie_name, {
     path: '/' 
   });
+}
+
+exports.signOut = function(req, res, next) {
+  cleanSession(req, res);
   res.status(200).json({
     "message": "注销成功"
   });
-};
+}
 
 exports.updatePass = function (req, res, next) {
   var form = signForm(req.body);
@@ -328,11 +335,9 @@ exports.resetPass = function (req, res, next) {
     form.cleaned_data.rs_pass = rs_pass;
     preEmail.preResetPass(form, next, function(info){
       var has_send = mail.sendEmail(info.email, info.content);
-      if(has_send){
-        return res.status(200).json({
-          "message": "您好,重置信息已经发送到您的邮箱,请注意查收!"
-        });
-      }
+      return res.status(200).json({
+        "message": "您好,重置信息已经发送到您的邮箱,请注意查收!"
+      });
     });
   });
 };

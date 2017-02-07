@@ -1,3 +1,4 @@
+"use strict";
 var Table      = require('./index');
 var Connection = Table.Connection;
 
@@ -7,6 +8,7 @@ function ItemModel(){
     "name"           : {"type": Connection.STRING},
     "description"    : {"type": Connection.TEXT},
     "keywords"       : {"type": Connection.STRING},
+    "picture_url"    : {"type": Connection.STRING},
     "price"          : {"type": Connection.FLOAT},
     "status"         : {"type": Connection.INTEGER, defaultValue: 0}, //0,未激活,1已经激活
     "collect_count"  : {"type": Connection.INTEGER, defaultValue: 0},
@@ -22,7 +24,7 @@ function ItemModel(){
     "order": "DESC"
   }];
   this.Item  = Table.createModel(this.tab_name, this.schema, this.indexes);
-  this.Item.sync();
+  this.Item.sync({force: true});
 }
 
 module.exports = new ItemModel();

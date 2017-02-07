@@ -1,3 +1,4 @@
+"use strict";
 var config      = require('../config/config');
 var eventproxy  = require('eventproxy');
 var debug       = require('debug')("middlewares:auth");
@@ -25,7 +26,7 @@ exports.userRequired = function(req, res, next){
 };
 
 exports.adminRequired = function(req, res, next){
-  if(req.session.user &&req.session.user.status === config.status.is_admin){
+  if(req.session.user && req.session.user.status === config.status.is_admin){
     return next();
   }
   return res.status(403).json({
@@ -90,7 +91,7 @@ exports.blocked = function(req, res ,next){
   }
 
   if(req.session.user && req.session.user.status === config.status.blocked){
-    res.status(422).json({
+    res.status(403).json({
       "message":'抱歉，您已经被锁定'
     });
     return;
@@ -105,7 +106,7 @@ exports.isPhoneBrowser = function(req, res, next){
     return next();
   }
 
-  return res.status(422).json({
+  return res.status(403).json({
     "message":'手机浏览可以获得最佳体验哦!'
   });
 };

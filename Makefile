@@ -3,7 +3,7 @@ TEST_FILE = $(shell find test -type f -name "*.test.js")
 MOCHA_REPORTER = spec
 TEST_TIME_OUT = 5000
 TEST_DIR = "./test/"
-TDF = "sign.test.js"
+TDF = "./controllers/sign.test.js"
 DEBUG_LISTEN = "localhost:5858"
 test:
 	@./node_modules/mocha/bin/mocha  \
@@ -14,13 +14,14 @@ test:
 debug-exp:
 	@node --inspect --debug $(MAIN)
 debug:
-	@start cmd /k node --debug $(MAIN) $(DEBUG_LISTEN)
-	@node debug $(MAIN)
+	@node --debug $(MAIN) $(DEBUG_LISTEN)
+	# @node debug $(MAIN)
 debug-test:
-	@start cmd /k mocha --debug $(TEST_DIR)$(TDF) $(DEBUG_LISTEN)
-	@node debug $(MAIN) $(DEBUG_LISTEN)
+	@mocha debug $(TEST_DIR)$(TDF)
+	# @node debug $(MAIN) $(DEBUG_LISTEN)
 ins:
 	@npm install $(p) --save
+#just for windows
 db:
 	@start cmd /k redis-server
 	@start cmd /k mongod \

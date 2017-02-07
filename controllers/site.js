@@ -1,3 +1,4 @@
+"use strict";
 var config        = require('../config/config');
 var eventproxy    = require('eventproxy');
 var Item          = require('../proxys/item');
@@ -22,7 +23,7 @@ exports.search = function(req, res, next) {
     return res.status(403).json(form.error);
   }
 
-  Item.search(form.cleaned_data.keywords, function(err, items){
+  Item.search(form.cleaned_data.search_words, function(err, items){
     if(err){
       logger.warn("search: " + err);
       return res.status(422).json({
@@ -52,7 +53,7 @@ exports.config  = function(req, res, next) {
 
 /**
  * 文件上传路径临时存放到req.session.user.images中,
- * 图片上传路径存放到user_name(随机值)文件夹存放。
+ * 图片上传名称为user_name/(hash值).jpg。
  */
 exports.uploadPic = function(req, res, next) {
   var images      = req.session.user.images;

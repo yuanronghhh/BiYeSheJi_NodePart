@@ -1,3 +1,4 @@
+"use strict";
 var Table      = require('./index');
 var Connection = Table.Connection;
 
@@ -5,6 +6,7 @@ function UserModel(){
   this.tab_name    = 'user';
   this.schema = {
     "name"         : {"type": Connection.STRING},
+    "picture_url"  : {"type": Connection.STRING},
     "email"        : {"type": Connection.STRING,
       "validate"  : {
         "isEmail": true,
@@ -26,7 +28,7 @@ function UserModel(){
     "unique": true
   }];
   this.User = Table.createModel(this.tab_name, this.schema, this.indexes);
-  this.User.sync();
+  this.User.sync({force: false});
 }
 
 module.exports = new UserModel();

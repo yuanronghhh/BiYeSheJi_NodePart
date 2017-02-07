@@ -1,6 +1,7 @@
+"use strict";
 var nodemailer = require('nodemailer');
 var config     = require('../config/config');
-var logger     = require('log4js');
+var logger     = require('./logger');
 
 /**
  * content为转换过的网页
@@ -9,12 +10,11 @@ var logger     = require('log4js');
 exports.sendEmail = function(receiver, content){
   config.mailOptions.to   = receiver;
   config.mailOptions.html = content;
-  console.log(config.mailOptions.html);
+  var transporter = nodemailer.createTransport(config.smtpConfig);
   return true;
-  // var transporter = nodemailer.createTransport(config.smtpConfig);
   // transporter.sendMail(config.mailOptions, function(err, info){
   //   if(err){
-  //     logger.fatal("mail send error: " + err.response);
+  //     logger.fatal("mail send error: " + err);
   //     return false;
   //   }
   //   logger.info("mail success info: " + info);

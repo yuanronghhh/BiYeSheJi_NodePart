@@ -16,10 +16,11 @@
   "expr": true,
   "eqeqeq": false,
   "eqnull": false,
-  "newcap": true,
+  "newcap": false,
   "noarg": true,
   "undef": true,
   "proto": true,
-  "strict": false,
-  "smarttabs": true
+  "strict": true,
+  "smarttabs": true,
+  "mocha": true
 }
