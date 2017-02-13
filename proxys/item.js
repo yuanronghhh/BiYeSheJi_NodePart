@@ -129,7 +129,7 @@ exports.search = function(key, cb) {
   let q = '%'+ key + '%';
   let wh = {
     $or: [
-      {name:{$like: q}}, 
+      {name:{$like: q}},
       {description:{$like: q}}
     ]
   };

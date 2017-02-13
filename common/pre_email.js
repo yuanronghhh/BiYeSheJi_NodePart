@@ -9,7 +9,7 @@ var tools      = require('../common/tools');
 exports.preActive = function(form, next, cb){
   var email      = form.cleaned_data.email;
   var name       = form.cleaned_data.name;
-  var is_man     = form.cleaned_data.gender === '男'? 
+  var is_man     = form.cleaned_data.gender === '男'?
     true
     : false;
   var time       = new Date();

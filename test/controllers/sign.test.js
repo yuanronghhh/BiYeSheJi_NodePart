@@ -85,7 +85,7 @@ describe("controllers/sign.js", function(){
         var delta = 1000 * 60 * 60 * 24 * 3;
         var tm = (new Date(Date.now() - delta)).toLocaleString();
         var link = "/active_user/?active_key=" + data.link.active_key +
-          "&&email=" + data.email + 
+          "&&email=" + data.email +
           "&&create_at=" + tm;
         request(app)
           .get(link)

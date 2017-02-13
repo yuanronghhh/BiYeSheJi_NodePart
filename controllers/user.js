@@ -16,6 +16,6 @@ exports.getUser = function (req, res, next) {
 
 };
 
-exports.getReplyHistory = function (req, res, next) { 
+exports.getReplyHistory = function (req, res, next) {
 
 };

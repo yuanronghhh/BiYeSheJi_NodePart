@@ -14,7 +14,8 @@ test:
 debug-exp:
 	@node --inspect --debug $(MAIN)
 debug:
-	@node --debug $(MAIN) $(DEBUG_LISTEN)
+	@start cmd /k node --debug $(MAIN) $(DEBUG_LISTEN)
+	@node debug $(MAIN) $(DEBUG_LISTEN)
 	# @node debug $(MAIN)
 debug-test:
 	@mocha debug $(TEST_DIR)$(TDF)

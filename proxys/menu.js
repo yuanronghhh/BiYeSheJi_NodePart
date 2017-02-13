@@ -3,8 +3,8 @@ var Menu      = MenuModel.Menu;
 var attrs     = [
   'id',
   'name',
-  'description', 
-  'price', 
+  'description',
+  'price',
   'create_at',
   'update_at'
 ];

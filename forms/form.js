@@ -36,7 +36,7 @@ Form.prototype.formValidator = function(data, data_type){
     data_type = 'name';
     if(data.indexOf('@') > -1){
       data_type = "email";
-    } 
+    }
   }
 
   if(!data){

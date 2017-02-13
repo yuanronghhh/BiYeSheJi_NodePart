@@ -8,7 +8,7 @@ log4js.configure({
   appenders: [{
     "type" : "console"
   },{
-    "type": "file", 
+    "type": "file",
     "filename": "docs/logs/cheese.log",
     "maxLogSize": 20480,
     "backups": 5,

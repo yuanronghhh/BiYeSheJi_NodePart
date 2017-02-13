@@ -232,7 +232,7 @@ exports.activeUser = function(req, res, next){
 function cleanSession(req, res){
   req.session.destroy();
   res.clearCookie(config.auth_cookie_name, {
-    path: '/' 
+    path: '/'
   });
 }
 

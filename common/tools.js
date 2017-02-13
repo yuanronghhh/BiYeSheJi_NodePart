@@ -134,8 +134,8 @@ Tools.prototype.appendConfig = function(config, extras){
   var keys = Object.keys(extras);
   for(let i = 0; i < keys.length; i++) {
     var attr = keys[i];
-    var type_satisfy =  !typeof(config[attr]) 
-      || this.getSameType(config[attr], extras[attr]) 
+    var type_satisfy =  !typeof(config[attr])
+      || this.getSameType(config[attr], extras[attr])
       ?  true: false;
     if(type_satisfy){
       if (type_satisfy && Array.isArray(config[attr])) {

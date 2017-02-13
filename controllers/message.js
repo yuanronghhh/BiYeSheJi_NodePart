@@ -4,7 +4,7 @@ exports.sendTo = function (req, res, next) {
 
 };
 
-exports.blockMessage = function (req, res, next) { 
+exports.blockMessage = function (req, res, next) {
 
 };
 

@@ -12,7 +12,7 @@ exports.genCookie = function(user, res){
     signed: true,
     httpOnly: false
   };
-  res.cookie(config.auth_cookie_name, auth_token, opts); 
+  res.cookie(config.auth_cookie_name, auth_token, opts);
 };
 
 exports.userRequired = function(req, res, next){

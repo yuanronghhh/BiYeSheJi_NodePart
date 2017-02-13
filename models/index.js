@@ -4,7 +4,7 @@ var Connection = require('sequelize');
 
 var connection = new Connection(
     config.mysql.database,
-    config.mysql.user, 
+    config.mysql.user,
     config.mysql.password,
     {
       "host"   : config.mysql.host,
