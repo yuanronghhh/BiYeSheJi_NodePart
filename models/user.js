@@ -8,13 +8,14 @@ function UserModel(){
     "name"         : {"type": Connection.STRING},
     "picture_url"  : {"type": Connection.STRING},
     "email"        : {"type": Connection.STRING,
-      "validate"  : {
+      "validate"   : {
         "isEmail": true,
       }
     },
     "gender"       : {"type": Connection.ENUM('男', '女')},
+    "money"        : {"type": Connection.INTEGER, defaultValue: 0},
     "password"     : {"type": Connection.STRING},
-    "status"       : {"type": Connection.INTEGER, defaultValue: 0}, //0,未激活,1已经激活
+    "status"       : {"type": Connection.INTEGER, defaultValue: 0},
     "phone_number" : {"type": Connection.STRING(11)},
     "create_at"    : {"type": Connection.DATE, defaultValue: Connection.NOW},
     "update_at"    : {"type": Connection.DATE, defaultValue: Connection.NOW},
@@ -28,7 +29,7 @@ function UserModel(){
     "unique": true
   }];
   this.User = Table.createModel(this.tab_name, this.schema, this.indexes);
-  this.User.sync({force: false});
+  this.User.sync(Table.sync);
 }
 
 module.exports = new UserModel();

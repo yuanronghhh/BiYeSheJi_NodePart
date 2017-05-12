@@ -1,7 +1,7 @@
 var path   = require('path');
 var config = {
   "domain"                            : "localhost:3000",
-  "port"                              : 3000,
+  "port"                              : 8000,
   "site_logo"                         : "images/site_logo.png",
   "site_name"                         : "智能点餐系统",
   "description"                       : "a app for campus",
@@ -13,7 +13,8 @@ var config = {
     "deactivated": 0,
     "activated"  : 1,
     "is_admin"   : 2,
-    "blocked"    : 3,
+    "iswatcher"  : 3,
+    "blocked"    : 4
   },
   "admins"                            : {
     "greyhound"  : true
@@ -37,7 +38,7 @@ var config = {
     "host"       : "127.0.0.1"        ,
     "user"       : "root"             ,
     "password"   : "root"             ,
-    "database"   : "eat_test_db"      ,
+    "database"   : "eat_db"           ,
     "charset"    : "utf8_general_ci"  ,
     "debug"      : true               ,
   },
@@ -48,7 +49,7 @@ var config = {
     "redis_db  " : 0,
   },
   "upload_path"     : path.resolve("uploads"),
-  "limits"          : 5,                                                 //分页限制
+  "page_limit"          : 5,                                             //分页限制
   "msg_send_limit"  : 3,                                                 //短信发送次数限制
   "login_err_times" : 4,                                                 //登录错误次数限制
   "reply_interval"  : 5 * 60 * 1000,                                     //5分钟之内不能回复两次

@@ -14,13 +14,22 @@ var logger       = require('./common/logger');
 
 var app          = express();
 
+
+// 允许跨域请求, 并带Cookie验证
+app.all("*", function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
 app.set('trust proxy', ['loopback']);
 app.use(morgan('dev'));
 app.use(bodyParser.json({}));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser(config.session_secret));
 
-app.use(express.static(path.join(__dirname, 'views/page/dist/')));
+app.use(express.static(path.join(__dirname, '../page/dist/')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'html');
 app.engine('html',require('ejs').renderFile);

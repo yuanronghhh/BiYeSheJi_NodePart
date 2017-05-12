@@ -30,11 +30,26 @@ function Table(){
     createAt: false,
     updateAt: false,
   };
+  this.sync = { sync: true };
 }
 
 Table.prototype.createModel = function(tab_name, define, indexes){
   this.tab_config.indexes = indexes || [];
   return connection.define(tab_name, define, this.tab_config);
 };
+
+Table.prototype.query = function(query, opt, cb){
+  let tp = opt.type;
+  if(!tp) {
+    tp = connection.QueryTypes.RAW;
+  }
+
+  opt.type = connection.QueryTypes[opt.type.toUpperCase()];
+  return connection.query(query, opt).then(cb);
+}
+
+Table.prototype.connection = function(){
+  return connection;
+}
 
 module.exports = new Table();

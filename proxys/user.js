@@ -7,6 +7,7 @@ var attrs     = [
   "id",
   "name",
   "email",
+  "picture_url",
   "gender",
   "update_at"
 ];
@@ -74,7 +75,7 @@ function getUser(wh, cb, limits){
     _.merge(query, limits);
   }
   User.findOne(query).then(function(user){
-    cb('', user);
+    cb('', user.dataValues);
   }).catch(cb);
 }
 exports.getUser = getUser;
@@ -111,12 +112,12 @@ exports.activeUser = function(user, cb){
   return cb('');
 };
 
-exports.checkBlock = function(user){
-  if(user.status === config.status.blocked){
+exports.checkActive = function(user) {
+  if(user.status === config.status.activated) {
     return true;
-  }
+  } 
   return false;
-};
+}
 
 exports.changePassword = function(user, pass_hash, cb){
   var err = new Error("用户未激活");
@@ -129,6 +130,24 @@ exports.changePassword = function(user, pass_hash, cb){
   user.password = pass_hash;
   user.save().catch(cb);
   return cb('');
+};
+
+exports.getUserInfo = function (info, user) {
+  let user_info = {};
+  if (info.status === config.status.is_admin) {
+    return user;
+  }
+
+  if (info.status === config.status.activated ) {
+    for(var attr of attrs) {
+      user_info[attr] = user[attr];
+    }
+    if (info.status !== config.status.iswatcher) {
+      user_info['money'] = user["money"];
+    }
+  }
+
+  return user_info;
 };
 
 exports.deleteUser = function(wh, cb) {

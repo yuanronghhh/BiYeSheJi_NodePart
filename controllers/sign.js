@@ -64,10 +64,10 @@ exports.signup = function (req, res, next) {
         "message": "抱歉, 该邮箱已经被注册"
       });
     }
-    ep.emit('check name', user);
+    ep.emit('check name');
   }));
 
-  ep.on('check name', function(user){
+  ep.on('check name', function(){
     User.getUserByName(name, ep.done(function(user){
       if(user){
         return res.status(422).json({
@@ -103,6 +103,35 @@ exports.signup = function (req, res, next) {
     }));
   });
 
+};
+
+exports.checkAccount = function(req, res, next) {
+  var form = signForm(req.body);
+  form.checkAccount();
+
+  var checkMethod;
+  var account;
+  if(form.cleaned_data.hasOwnProperty('email')){
+    account = form.cleaned_data.email;
+    checkMethod  = User.getUserByEmail;
+  } else {
+    account = form.cleaned_data.name;
+    checkMethod = User.getUserByName;
+  }
+
+  checkMethod(account, function(err, user) {
+    if(user) {
+      return res.status(200).json({
+        "message": "成功",
+        "picture_url": user.picture_url
+      });
+    } else {
+      return res.status(404).json({
+        "message": "失败",
+        "picture_url": ""
+      });
+    }
+  });
 };
 
 exports.login = function(req, res, next) {
@@ -155,7 +184,7 @@ exports.login = function(req, res, next) {
           "message": "账号或密码错误"
         });
       }
-      if(User.checkBlock(user)){
+      if(!User.checkActive(user)){
         res.status(422).json({
           "message":'抱歉,账户未激活'
         });
@@ -168,7 +197,8 @@ exports.login = function(req, res, next) {
   ep.on('gen cookie', function(user){
     auth.genCookie(user, res);
     return res.status(200).json({
-      "message":'登录成功'
+      "message":'登录成功',
+      "user": User.getUserInfo({status: config.status.activated}, user)
     });
   });
 

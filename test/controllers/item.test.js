@@ -12,100 +12,112 @@ describe('controllers/item.js', function(){
   var random_item   = support.getItem()["random_item"];
   var agent = request.agent(app);
 
-  before('init user', function(done){
-    support.initUser(function(err){
-      done(err);
+  // before('init user', function(done){
+  //   support.initUser(function(err){
+  //     done(err);
+  //   });
+  // });
+
+  // it("loign ordinary before get item", function(done){
+  //   agent
+  //     .post('/login')
+  //     .send(ordinary_user)
+  //     .end(function(err, res){
+  //       support.common(err, res, done);
+  //     });
+  // });
+
+  // it('should not create a item with ordinary_user', function(done) {
+  //   agent
+  //     .post("/item/create")
+  //     .expect(403)
+  //     .send(random_item)
+  //     .end(function(err, res){
+  //       support.common(err, res, done);
+  //     });
+  // });
+
+  // it("loign admin before get item", function(done){
+  //   agent
+  //     .get('/signout')
+  //     .end(function(err, res){
+  //       console.log(JSON.stringify(res.body));
+  //       agent
+  //         .post('/login')
+  //         .send(admin_user)
+  //         .end(function(err, res){
+  //           support.common(err, res, done);
+  //         });
+  //     });
+  // });
+
+  // it('should create a item with admin_user', function(done) {
+  //   agent
+  //     .post("/item/create")
+  //     .expect(200)
+  //     .send(random_item)
+  //     .end(function(err, res){
+  //       support.common(err, res, done);
+  //     });
+  // });
+
+  // var item_id;
+  // it("should get items", function(done) {
+  //   agent
+  //     .get("/item/getitems")
+  //     .expect(200)
+  //     .end(function(err, res) {
+  //       console.log(JSON.stringify(res.body));
+
+  //       item_id = res.body[0].id;
+  //       agent
+  //         .get("/item/" + item_id + "/detail")
+  //         .expect(200)
+  //         .end(function(err, res){
+  //           console.log("--> get item detail <--");
+  //           console.log(JSON.stringify(res.body));
+  //           done(err);
+  //         });
+  //     });
+  // });
+
+  // it("should delete a item", function(done) {
+  //   agent
+  //     .post("/item/" + item_id + "/delete")
+  //     .expect(200)
+  //     .end(function(err, res){
+  //       support.common(err, res, done);
+  //     });
+  // });
+
+  // it("should not delete a item when not exists", function(done){
+  //   agent
+  //     .post("/item/" + item_id + "/delete")
+  //     .expect(422)
+  //     .end(function(err, res){
+  //       support.common(err, res, done);
+  //     });
+  // });
+
+  // it("should get 404 when item not exists", function(done){
+  //   agent
+  //     .get("/item/" + item_id + "/detail")
+  //     .expect(404)
+  //     .end(function(err, res){
+  //       support.common(err, res, done);
+  //     });
+  // });
+
+  describe("getGuessLike", function() {
+    it("should get guess like items", function(done) {
+      request(app)
+        .get("/item/getguesslike")
+        .expect(200)
+        .end(function(err, res){
+          support.common(err, res, done);
+        });
     });
-  });
 
-  it("loign ordinary before get item", function(done){
-    agent
-      .post('/login')
-      .send(ordinary_user)
-      .end(function(err, res){
-        support.common(err, res, done);
-      });
-  });
-
-  it('should not create a item with ordinary_user', function(done) {
-    agent
-      .post("/item/create")
-      .expect(403)
-      .send(random_item)
-      .end(function(err, res){
-        support.common(err, res, done);
-      });
-  });
-
-  it("loign admin before get item", function(done){
-    agent
-      .get('/signout')
-      .end(function(err, res){
-        console.log(JSON.stringify(res.body));
-        agent
-          .post('/login')
-          .send(admin_user)
-          .end(function(err, res){
-            support.common(err, res, done);
-          });
-      });
-  });
-
-  it('should create a item with admin_user', function(done) {
-    agent
-      .post("/item/create")
-      .expect(200)
-      .send(random_item)
-      .end(function(err, res){
-        support.common(err, res, done);
-      });
-  });
-
-  var item_id;
-  it("should get items", function(done) {
-    agent
-      .get("/item/getitems")
-      .expect(200)
-      .end(function(err, res) {
-        console.log(JSON.stringify(res.body));
-
-        item_id = res.body[0].id;
-        agent
-          .get("/item/" + item_id + "/detail")
-          .expect(200)
-          .end(function(err, res){
-            console.log("--> get item detail <--");
-            console.log(JSON.stringify(res.body));
-            done(err);
-          });
-      });
-  });
-
-  it("should delete a item", function(done) {
-    agent
-      .post("/item/" + item_id + "/delete")
-      .expect(200)
-      .end(function(err, res){
-        support.common(err, res, done);
-      });
-  });
-
-  it("should not delete a item when not exists", function(done){
-    agent
-      .post("/item/" + item_id + "/delete")
-      .expect(422)
-      .end(function(err, res){
-        support.common(err, res, done);
-      });
-  });
-
-  it("should get 404 when item not exists", function(done){
-    agent
-      .get("/item/" + item_id + "/detail")
-      .expect(404)
-      .end(function(err, res){
-        support.common(err, res, done);
-      });
   });
 
   describe("hotItems", function() {

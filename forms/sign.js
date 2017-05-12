@@ -1,3 +1,4 @@
+"use strict";
 var Form      = require("./form");
 var User      = require('../proxys/user');
 
@@ -9,11 +10,17 @@ function SignForm(data){
   this.cleaned_data = {};
 }
 
+SignForm.prototype.checkAccount = function(){
+  var attr = [
+    "account"
+  ];
+  this.validateData(attr, this.data);
+};
+
 SignForm.prototype.signup = function(){
   var attr = [
     "email",
     "name",
-    "phone_number",
     "password",
     "gender"
   ];

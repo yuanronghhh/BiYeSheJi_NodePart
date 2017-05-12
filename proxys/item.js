@@ -6,6 +6,8 @@ var _          = require('lodash');
 var attrs      = [
   'id',
   'name',
+  'title',
+  'profile',
   'description',
   'price',
   'create_at',

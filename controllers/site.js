@@ -9,7 +9,7 @@ var multer        = require('multer');
 var disk_storage  = require('../common/disk_storage');
 
 exports.index = function(req, res){
-  res.render("page/dist/index.html");
+  res.render("index.html");
 };
 
 exports.about = function(req, res) {

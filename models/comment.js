@@ -28,7 +28,7 @@ function CommentModel(){
   this.indexes       = [{
   }];
   this.Comment = Table.createModel(this.tab_name, this.schema, this.indexes);
-  this.Comment.sync();
+  this.Comment.sync(Table.sync);
 }
 
 module.exports = new CommentModel();

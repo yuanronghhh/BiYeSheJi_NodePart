@@ -2,6 +2,7 @@
 var Item       = require('../proxys/item');
 var logger     = require('../common/logger');
 var itemForm   = require('../forms/item');
+var config     = require('../config/config');
 var eventproxy = require('eventproxy');
 var debug      = require('debug')("controllers/item");
 
@@ -65,6 +66,30 @@ exports.getItems = function(req, res, next) {
 };
 
 /**
+ * 获取猜你喜欢
+ */
+exports.getGuessLike = function(req, res, next){
+  var user = req.session.user;
+
+  if(!user) {
+    return hotItems(req, res, next);
+  }
+
+  var wh = {
+    "$or": [
+      {"collect_count": { "$gte": 3 }},
+      {"zan": { "$gte": 3 }}
+    ]
+  };
+  Item.getItemsByQuery({ status: config.status.activated }, wh, function(err, items){
+    if(err) {
+      return next(err);
+    }
+    return res.status(200).json(items);
+  });
+};
+
+/**
  * 查看菜品详细情况
  */
 exports.getItem = function(req, res, next) {
@@ -93,8 +118,6 @@ exports.getItem = function(req, res, next) {
 exports.changeBlock = function (req, res, next) {
   var user = req.session.user;
   var form = itemForm(req.body);
-
-
 };
 
 /**
@@ -103,21 +126,21 @@ exports.changeBlock = function (req, res, next) {
 exports.activeItem = function (req, res, next) {
 };
 
-exports.hotItems = function (req, res, next) {
-  var user = req.session.user;
+function hotItems(req, res, next) {
   var wh = {
     "$or": [
       {"collect_count": { "$gte": 3 }},
       {"zan": { "$gte": 3 }}
     ]
   };
-  Item.getItemsByQuery(user, wh, function(err, items){
+  Item.getItemsByQuery({ status: config.status.activated }, wh, function(err, items){
     if(err) {
       return next(err);
     }
     return res.status(200).json(items);
   });
-};
+}
+exports.hotItems = hotItems;
 
 exports.deleteItem = function (req, res, next) {
   var form = itemForm(req.params);

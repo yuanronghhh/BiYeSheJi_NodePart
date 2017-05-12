@@ -16,6 +16,8 @@ if(config.allow_sign_up) {
 router.get('/config', site.config);
 
 router.post('/login', sign.login);
+router.post('/checkaccount', sign.checkAccount);                                     //获取用户图像
+
 router.post('/resetpass', auth.adminRequired, sign.resetPass);
 router.get('/active_user', sign.activeUser);
 router.post('/reactive', sign.reActive);
@@ -28,6 +30,7 @@ router.get('/pic/showpic', auth.adminRequired, site.showPic);                   
 router.post('/pic/deletepic', auth.adminRequired, site.deletePic);                   // 删除已经上传的图片
 
 router.get('/hotitems', item.hotItems);                                              // 提供热门的菜品
+router.get('/item/getguesslike', item.getGuessLike);                                 // 获取猜你喜欢
 
 router.post('/item/create', auth.adminRequired, item.createItem);
 router.get('/item/getitems', auth.userRequired, item.getItems);                      // 获取所有菜品
@@ -47,7 +50,7 @@ router.post('/menu/:id/delete', menu.deleteMenu);                               
 router.post('/menu/:id/update', menu.updateMenu);                                    // 更新菜单详情
 router.post('/menu/:id/changeblock', menu.changeBlock);                              // 改变锁定状态
 
-router.get('/user/:name/getuser', auth.userRequired, user.getUser);                  // 获取简介信息
+router.get('/user', auth.userRequired, user.getUser);                                // 获取简介信息
 router.post('/user/:name/detail', auth.userRequired, user.getDetail);                // 用户详细信息
 router.post('/user/:name/changeblock',auth.adminRequired, user.changeBlock);         // 锁定用户
 router.post('/user/:name/update',auth.userRequired, user.update);                    // 用户更新信息

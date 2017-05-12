@@ -15,7 +15,7 @@ function MenuModel(){
   };
   this.indexes       = [];
   this.Menu  = Table.createModel(this.tab_name, this.schema, this.indexes);
-  this.Menu.sync();
+  this.Menu.sync(Table.sync);
 }
 
 module.exports = new MenuModel();
