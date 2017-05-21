@@ -53,15 +53,21 @@ app.use(function(req, res, next) {
 
 app.use(function(err, req, res, next){
   if (req.xhr){
-    res.status(500).json({
-      err: err.message
-    });
+    if(config.debug) {
+      res.status(500).json({
+        err: err.message
+      });
+    } else {
+      logger.fatal("err: --> ", err.message);
+      res.status(500).end();
+    }
   }
   next(err);
 });
 
 app.use(function(err, req, res, next) {
-  res.status(err.status || 500);
+  err.status = err.status || 500;
+  res.status(err.status);
   if(err.status === 500) {
     logger.fatal("err: --> " + err.message);
   }

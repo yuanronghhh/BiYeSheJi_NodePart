@@ -1,3 +1,4 @@
+"use strict";
 var Form      = require("./form");
 var Menu      = require('../proxys/menu');
 
@@ -10,12 +11,23 @@ function MenuForm(data){
 }
 
 MenuForm.prototype.createMenu = function(){
-  var attr = [
-    "description",
-    "items_name",
-    "items_price",
-  ];
-  this.validateData(attr, this.data);
+  var dt = JSON.parse(this.data);
+  if(Array.isArray(dt)) {
+    this.cleaned_data = dt;
+  } else {
+    this.error["message"] = "数据格式不正确";
+    this.is_valid = false;
+  }
+};
+
+MenuForm.prototype.showTip = function(){
+  var dt = JSON.parse(this.data);
+  if(Array.isArray(dt)) {
+    this.cleaned_data = dt;
+  } else {
+    this.error["message"] = "数据格式不正确";
+    this.is_valid = false;
+  }
 };
 
 module.exports = function(data){

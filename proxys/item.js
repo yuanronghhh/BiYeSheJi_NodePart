@@ -1,24 +1,26 @@
 "use strict";
-var ItemModel  = require('../models/item');
+var ItemModel  = require("../models/item");
 var Item       = ItemModel.Item;
-var config     = require('../config/config');
-var _          = require('lodash');
+var config     = require("../config/config");
+var _          = require("lodash");
 var attrs      = [
-  'id',
-  'name',
-  'title',
-  'profile',
-  'description',
-  'price',
-  'create_at',
-  'update_at',
-  "zan",
+  "id",
+  "name",
+  "title",
+  "profile",
+  "keywords",
+  "description",
+  "price",
+  "create_at",
+  "update_at",
+  "up",
+  "type",
   "collect_count"
 ];
 
 exports.createItem = function(data, cb){
   Item.create(data).then(function(){
-    cb('');
+    cb("");
   }).catch(cb);
 };
 
@@ -28,11 +30,10 @@ function getItemByQuery(user, wh, cb) {
     "where": _.merge({ "status": config.status.activated }, wh)
   };
   if(user.status === config.status.is_admin){
-    delete query.attributes;
-    delete query.where.status;
+    query.attributes = {};
   }
   Item.findOne(query).then(function(item){
-    cb('', item);
+    cb("", item);
   }).catch(cb);
 }
 exports.getItemByQuery = getItemByQuery;
@@ -49,7 +50,7 @@ function getItem(wh, cb){
     "where": wh
   };
   Item.findOne(query).then(function(item){
-    cb('', item);
+    cb("", item);
   }).catch(cb);
 }
 exports.getItem = getItem;
@@ -65,21 +66,26 @@ exports.activeItem = function(item, cb){
   item.status    = config.status.activated;
   item.update_at = Date(Date.now());
   item.save().catch(cb);
-  return cb('');
+  return cb("");
 };
 
-function getItemsByQuery(user, wh, cb) {
+function getItemsByQuery(user, wh, order, opt, cb) {
+  if(attrs.indexOf(order.replace(" DESC", "")) === -1) {
+    order = "";
+  }
   let query = {
     "limit": config.limit,
     "attributes": attrs,
-    "where": _.merge({status: config.status.activated}, wh)
+    "order": order,
+    "where": _.merge({status: config.status.activated}, wh),
   };
+  query = _.defaults(opt, query);
   if(user.status === config.status.is_admin){
     delete query.attributes;
     delete query.where.status;
   }
   Item.findAll(query).then(function(items){
-    cb('', items);
+    cb("", items);
   }).catch(cb);
 }
 exports.getItemsByQuery = getItemsByQuery;
@@ -120,22 +126,26 @@ exports.checkBlock = function(item){
 exports.changeBlock = function(item, cb) {
   if(item.status !== config.status.blocked) {
     item.status = config.status.blocked;
+    item.update_at = Date(Date.now());
   } else {
     item.status = config.status.activated;
+    item.update_at = Date(Date.now());
   }
   item.save().catch(cb);
-  return cb('');
+  return cb("");
 };
 
 exports.search = function(key, cb) {
-  let q = '%'+ key + '%';
+  let q = "%"+ key + "%";
   let wh = {
     $or: [
       {name:{$like: q}},
-      {description:{$like: q}}
+      {description:{$like: q}},
+      {keywords: {$like: q}},
+      {profile: {$like: q}}
     ]
   };
-  getItemsByQuery({status:1}, wh, cb);
+  getItemsByQuery({status:1}, wh, "", {}, cb);
 };
 
 exports.updateItem = function(item) {

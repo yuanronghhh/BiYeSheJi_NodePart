@@ -8,6 +8,8 @@ var attrs     = [
   "name",
   "email",
   "picture_url",
+  "status",
+  "phone_number",
   "gender",
   "update_at"
 ];
@@ -36,19 +38,22 @@ exports.getUserByEmail = function(email, cb){
  * query.attrs 添加上面额外的属性
  * query.offset
  */
-function getUsersByQuery(wh, cb, limits) {
-  var add_attrs = [];
-  if(Array.isArray(limits.attrs)) {
-    add_attrs = limits.attrs;
-  }
+function getUsersByQuery(user, wh, opt, cb) {
   let query = {
-    "attributes": attrs.concat(add_attrs),
+    "attributes": attrs,
     "limit": config.limit,
-    "offset": limits.offset || 0,
+    "offset": opt.offset || 0,
     "where": _.merge({status: config.status.activated}, wh)
   };
-  User.findAll(query).then(function(user){
-    cb('', user);
+
+  query = _.defaults(opt, query);
+
+  if(user.status === config.status.is_admin) {
+    delete query.attributes;
+  }
+
+  User.findAll(query).then(function(users){
+    cb('', users);
   }).catch(cb);
 }
 exports.getUsersByQuery = getUsersByQuery;
@@ -75,7 +80,7 @@ function getUser(wh, cb, limits){
     _.merge(query, limits);
   }
   User.findOne(query).then(function(user){
-    cb('', user.dataValues);
+    cb('', user);
   }).catch(cb);
 }
 exports.getUser = getUser;
@@ -95,10 +100,12 @@ function getUserByQuery(user, wh, cb){
     "attributes": attrs,
     "where": _.merge({"status": config.status.activated}, wh)
   }
+
   if(user.status === config.status.is_admin) {
-    delete query.where;
-    delete query.attributes;
+    delete query["attributes"];
+    query.where = {"id": user.id};
   }
+
   User.findOne(query).then(function(user){
     cb('', user);
   }).catch(cb);
@@ -112,11 +119,18 @@ exports.activeUser = function(user, cb){
   return cb('');
 };
 
-exports.checkActive = function(user) {
-  if(user.status === config.status.activated) {
-    return true;
+exports.updateUser = function(user, data, cb) {
+  _.merge(data, {update_at: Date(Date.now())});
+
+  user.update(data).catch(cb);
+  return cb('');
+}
+
+exports.checkDeActive = function(user) {
+  if(user.status === config.status.deactivated) {
+    return false;
   } 
-  return false;
+  return true;
 }
 
 exports.changePassword = function(user, pass_hash, cb){
@@ -138,10 +152,11 @@ exports.getUserInfo = function (info, user) {
     return user;
   }
 
-  if (info.status === config.status.activated ) {
+  if (info.status === config.status.activated) {
     for(var attr of attrs) {
       user_info[attr] = user[attr];
     }
+
     if (info.status !== config.status.iswatcher) {
       user_info['money'] = user["money"];
     }
@@ -150,11 +165,14 @@ exports.getUserInfo = function (info, user) {
   return user_info;
 };
 
-exports.deleteUser = function(wh, cb) {
-  let query = {
-    "where": wh
-  };
-  User.destroy(query).then(function(user){
-    cb('', user);
-  }).catch(cb);
+exports.deleteUser = function(user, wh, cb) {
+
+  if(user.status === config.status.is_admin) {
+    let query = {
+      "where": wh
+    };
+    User.destroy(query).then(function(user){
+      cb('', user);
+    }).catch(cb);
+  }
 }

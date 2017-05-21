@@ -1,15 +1,34 @@
+"use strict";
 var MenuModel = require('../models/menu');
 var Menu      = MenuModel.Menu;
+var config    = require('../config/config');
 var attrs     = [
   'id',
-  'name',
-  'description',
-  'price',
+  'remark',
+  'status',
+  'total',
+  'content',
   'create_at',
   'update_at'
 ];
 
-exports.createMenu = function(data, cb){
+exports.createMenu = function(user, menu, cb){
+  var data = {
+    "total": 0
+  };
+
+  for(var d of menu) {
+    data["total"] += d.price;
+  }
+
+  if(user.money <= data["total"]) {
+    return cb('', "您的余额不足以购买");
+  }
+
+  data["create_by"] = user.id;
+  data["status"] = 0;
+  data["content"] = JSON.stringify(menu);
+
   Menu.create(data).then(function(){
     cb('');
   }).catch(cb);
@@ -40,12 +59,15 @@ exports.activeMenu = function(menu, cb){
 exports.getMenus = function(user, wh, cb) {
   var query = {};
   query.attributes = attrs;
-  if(user.status == 3){
+
+  if(user.status == config.status.is_admin){
     query.attributes = {};
   }
+
   if(wh){
     query.where = wh;
   }
+
   Menu.findAll(query).then(function(menus){
     cb('', menus);
   }).catch(cb);

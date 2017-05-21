@@ -5,7 +5,6 @@ var Connection = Table.Connection;
 function CommentModel(){
   this.tab_name    = 'comment';
   this.schema = {
-    "title"       : {"type": Connection.STRING},
     "content"     : {"type": Connection.TEXT},
     "item_id"     : {"type": Connection.INTEGER,
       "reference" :{
@@ -19,7 +18,7 @@ function CommentModel(){
         "key": 'id'
       }
     },
-    "deleted"     : {"type": Connection.BOOLEAN, defaultValue: false},
+    "status"      : {"type": Connection.INTEGER, defaultValue: 0},
     "reported_bad": {"type": Connection.BOOLEAN, defaultValue: false},
     "zan_count"   : {"type": Connection.INTEGER},
     "create_at"   : {"type": Connection.DATE},

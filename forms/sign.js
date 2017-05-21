@@ -54,7 +54,7 @@ SignForm.prototype.updatePass = function() {
 
 SignForm.prototype.resetPass = function() {
   var attr = [
-    "email",
+    "account",
   ];
   this.validateData(attr, this.data);
 };

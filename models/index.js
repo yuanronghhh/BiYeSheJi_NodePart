@@ -30,7 +30,7 @@ function Table(){
     createAt: false,
     updateAt: false,
   };
-  this.sync = { sync: true };
+  this.sync = { force: false };
 }
 
 Table.prototype.createModel = function(tab_name, define, indexes){

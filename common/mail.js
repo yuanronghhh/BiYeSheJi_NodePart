@@ -17,7 +17,7 @@ exports.sendEmail = function(receiver, content){
   //     logger.fatal("mail send error: " + err);
   //     return false;
   //   }
-  //   logger.info("mail success info: " + info);
+  //   logger.info("mail success info: " + info.message);
   //   return true;
   // });
 };

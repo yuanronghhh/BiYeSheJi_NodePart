@@ -97,7 +97,7 @@ exports.signup = function (req, res, next) {
           return next(err);
         }
         res.status(200).json({
-          "message": "您好，激活邮件已经发生到您的邮箱，请确认后注册"
+          "message": "您好，激活邮件已经发生到您的邮箱，请确认"
         });
       });
     }));
@@ -184,7 +184,7 @@ exports.login = function(req, res, next) {
           "message": "账号或密码错误"
         });
       }
-      if(!User.checkActive(user)){
+      if(!User.checkDeActive(user)){
         res.status(422).json({
           "message":'抱歉,账户未激活'
         });
@@ -197,7 +197,7 @@ exports.login = function(req, res, next) {
   ep.on('gen cookie', function(user){
     auth.genCookie(user, res);
     return res.status(200).json({
-      "message":'登录成功',
+      "message": "登录成功",
       "user": User.getUserInfo({status: config.status.activated}, user)
     });
   });
@@ -331,11 +331,10 @@ exports.resetPass = function (req, res, next) {
     return res.status(403).json(form.error);
   }
   var ep    = new eventproxy();
-  var email = form.cleaned_data.email;
 
   ep.fail(next);
 
-  User.getUserByEmail(email, ep.done(function(user){
+  User.getUserByEmail(form.cleaned_data.email, ep.done(function(user){
     if(!user){
       logger.warn('resetPass: cannot get user');
       return res.status(404).json({
@@ -347,6 +346,7 @@ exports.resetPass = function (req, res, next) {
   ep.on('reset pass', function(user){
 
     var rs_pass = tools.getRandomVcode(8);
+    console.log(rs_pass);
     tools.bhash(rs_pass, ep.done(function(pass_hash){
 
       User.changePassword(user, pass_hash, function(err){

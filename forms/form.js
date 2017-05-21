@@ -99,6 +99,13 @@ Form.prototype.formValidator = function(data, data_type){
           '抱歉,请输入合适的价格',
           data_type, data);
       break;
+    case "url":
+    case "picture_url":
+      this.signError(
+          !validator.isURL(data),
+          '请输入正确链接',
+          data_type, data);
+      break;
     case "email":
       this.signError(
           !validator.isEmail(data),

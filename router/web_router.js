@@ -18,7 +18,7 @@ router.get('/config', site.config);
 router.post('/login', sign.login);
 router.post('/checkaccount', sign.checkAccount);                                     //获取用户图像
 
-router.post('/resetpass', auth.adminRequired, sign.resetPass);
+router.post('/resetpass', sign.resetPass);
 router.get('/active_user', sign.activeUser);
 router.post('/reactive', sign.reActive);
 router.get('/signout', sign.signOut);
@@ -32,8 +32,8 @@ router.post('/pic/deletepic', auth.adminRequired, site.deletePic);              
 router.get('/hotitems', item.hotItems);                                              // 提供热门的菜品
 router.get('/item/getguesslike', item.getGuessLike);                                 // 获取猜你喜欢
 
+router.get('/item', auth.userRequired, item.getItems);                               // 获取所有菜品
 router.post('/item/create', auth.adminRequired, item.createItem);
-router.get('/item/getitems', auth.userRequired, item.getItems);                      // 获取所有菜品
 router.get('/item/:id/detail', auth.userRequired, item.getItem);                     // 获取菜品详情
 router.post('/item/:id/delete', auth.adminRequired, item.deleteItem);                // 删除菜品
 router.post('/item/delete', auth.adminRequired, item.deleteItems);                   // 批量删除菜品
@@ -43,17 +43,24 @@ router.post('/item/:id/collect', auth.userRequired, item.collect);              
 router.post('/item/:id/decollect', auth.userRequired, item.decollect);               // 取消收藏菜品
 router.post('/item/:id/hascollected', auth.userRequired, item.hascollected);         // 判断是方法已经收藏菜品
 
-router.get('/hotmenus', menu.hotMenus);                                              // 提供热门的菜单
-router.get('/menu/getmenus', menu.getMenus);                                         // 获取所有菜单
-router.get('/menu/:id/detail', menu.getMenu);                                        // 获取菜单详情
-router.post('/menu/:id/delete', menu.deleteMenu);                                    // 删除菜单详情
-router.post('/menu/:id/update', menu.updateMenu);                                    // 更新菜单详情
+router.get('/menu', auth.userRequired, menu.getMenus);                               // 获取所有订单
+router.post('/menu/showtip', auth.userRequired, menu.showTip);                       // 提示用户点餐
+router.post('/menu/create', auth.userRequired,  menu.createMenu);                    // 创建订单订单
+router.get('/hotmenus', menu.hotMenus);                                              // 提供热门的订单
+router.get('/menu/:id/detail', menu.getMenu);                                        // 获取订单详情
+router.post('/menu/:id/delete', menu.deleteMenu);                                    // 删除订单详情
+router.post('/menu/:id/update', menu.updateMenu);                                    // 更新订单详情
 router.post('/menu/:id/changeblock', menu.changeBlock);                              // 改变锁定状态
 
 router.get('/user', auth.userRequired, user.getUser);                                // 获取简介信息
 router.post('/user/:name/detail', auth.userRequired, user.getDetail);                // 用户详细信息
 router.post('/user/:name/changeblock',auth.adminRequired, user.changeBlock);         // 锁定用户
 router.post('/user/:name/update',auth.userRequired, user.update);                    // 用户更新信息
+router.post('/user/:name/delete',auth.userRequired, user.deleteUser);                // 用户更新信息
+router.post('/user/create',auth.adminRequired, user.addUser);                        // 添加用户信息
+
+router.get('/admin/users', auth.adminRequired, user.getUsers);                       // 获取所有用户信息
+router.get('/admin/items', auth.adminRequired, item.getItems);                       // 获取所有菜品信息
 
 // router.post('/reply/:item_id/create', auth.userRequired, reply.create);           // 创建信息
 // router.get('/reply/:item_id/getrepy', auth.userRequired, reply.getReply);         // 获取回复信息

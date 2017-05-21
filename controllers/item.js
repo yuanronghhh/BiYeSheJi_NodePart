@@ -3,6 +3,8 @@ var Item       = require('../proxys/item');
 var logger     = require('../common/logger');
 var itemForm   = require('../forms/item');
 var config     = require('../config/config');
+var tools      = require('../common/tools');
+
 var eventproxy = require('eventproxy');
 var debug      = require('debug')("controllers/item");
 
@@ -54,8 +56,20 @@ exports.createItem = function (req, res, next) {
  * 获取已经创建成功的菜品
  */
 exports.getItems = function(req, res, next) {
-  var user = req.session.user;
-  Item.getItemsByQuery(user, {}, function(err, items){
+  var user  = req.session.user;
+  var query = req.query;
+  var wh    = {};
+  var order = '';
+
+  if(query["type"]){
+    wh["type"] = query["type"];
+  }
+
+  if(query["order"]){
+    order = query["order"];
+  }
+
+  Item.getItemsByQuery(user, wh, order, {}, function(err, items){
     debug("getItemsByQuery: items --> ", JSON.stringify(items));
     if(err){
       logger.fatal('getItemsByQuery: --> ' + err);
@@ -70,19 +84,21 @@ exports.getItems = function(req, res, next) {
  */
 exports.getGuessLike = function(req, res, next){
   var user = req.session.user;
+  var rdm = Number(tools.getRandomVcode(1));
+  var wh = {
+    "$or": [
+      {"collect_count": { "$gte": rdm }},
+      {"up": { "$gte": rdm }}
+    ]
+  };
 
   if(!user) {
     return hotItems(req, res, next);
   }
 
-  var wh = {
-    "$or": [
-      {"collect_count": { "$gte": 3 }},
-      {"zan": { "$gte": 3 }}
-    ]
-  };
-  Item.getItemsByQuery({ status: config.status.activated }, wh, function(err, items){
+  Item.getItemsByQuery({ status: config.status.activated }, wh, "create_at", {"limit": 3}, function(err, items){
     if(err) {
+      logger.fatal("guessLike -->", JSON.stringify(err));
       return next(err);
     }
     return res.status(200).json(items);
@@ -99,7 +115,9 @@ exports.getItem = function(req, res, next) {
   if(!form.is_valid){
     return res.status(403).json(form.error);
   }
+
   var item_id = form.cleaned_data.id;
+
   Item.getItemByQuery(user, {id: item_id}, function(err, item){
     debug("getItem: item --> ", JSON.stringify(item));
     if(err){
@@ -111,7 +129,10 @@ exports.getItem = function(req, res, next) {
         "message": "抱歉, 未找到相关菜品。"
       });
     }
-    return res.status(200).json(item);
+    return res.status(200).json({
+      "message": "成功",
+      "data": item
+    });
   });
 };
 
@@ -127,14 +148,17 @@ exports.activeItem = function (req, res, next) {
 };
 
 function hotItems(req, res, next) {
+  var rdm = Number(tools.getRandomVcode(10));
   var wh = {
     "$or": [
-      {"collect_count": { "$gte": 3 }},
-      {"zan": { "$gte": 3 }}
-    ]
+      {"collect_count": { "$gte": rdm }},
+      {"up": { "$gte":  rdm }}
+    ],
   };
-  Item.getItemsByQuery({ status: config.status.activated }, wh, function(err, items){
+
+  Item.getItemsByQuery({ status: config.status.activated }, wh, '', {}, function(err, items){
     if(err) {
+      logger.fatal("hotItems: --> ", JSON.stringify(err));
       return next(err);
     }
     return res.status(200).json(items);

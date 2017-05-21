@@ -11,6 +11,17 @@ function Tools() {
 }
 
 /**
+ * 根据权重出现true或者false
+ * 权重越大, 越容易返回true
+ * 默认0.5
+ * weight 范围为[0, 1]
+ */
+Tools.prototype.randomTrue = function(weight) {
+  weight = weight || 0.5;
+  return weight > Math.random() ? true : false;
+};
+
+/**
  * 获取一定长度数字字符串。
  * 如果length不存在,则长度为0-20之间
  */
