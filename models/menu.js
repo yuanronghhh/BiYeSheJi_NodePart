@@ -12,9 +12,10 @@ function MenuModel(){
       "reference": {
         "model": "user",
         "key": "id"
-      }
+      },
+      "onDelete": "cascade"
     },                                                                           // 下单用户
-
+    "user_name"        : {"type": Connection.STRING},
     "remark"           : {"type": Connection.TEXT('tiny')},                      // 用户口味描述等要求
     "content"          : {"type": Connection.TEXT},                              // 订单数据
     "create_at"        : {"type": Connection.DATE, defaultValue: Connection.NOW},
@@ -25,7 +26,7 @@ function MenuModel(){
     "unique": false
   }];
   this.Menu  = Table.createModel(this.tab_name, this.schema, this.indexes);
-  this.Menu.sync({force: false});
+  this.Menu.sync(Table.sync);
 }
 
 module.exports = new MenuModel();

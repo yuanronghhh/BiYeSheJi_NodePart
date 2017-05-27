@@ -9,7 +9,8 @@ function CollectionModel(){
       "reference": {
         "model": "user",
         "key": "id"
-      }
+      },
+      "onDelete": "cascade"
     },
     "item_id"      : {"type": Connection.INTEGER,
       "reference": {

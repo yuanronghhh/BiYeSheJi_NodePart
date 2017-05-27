@@ -49,7 +49,7 @@ var config = {
     "redis_db  " : 0,
   },
   "upload_path"     : path.resolve("uploads"),
-  "limit"          : 5,                                                  //分页限制
+  "limit"           : 5,                                                 //分页限制
   "msg_send_limit"  : 3,                                                 //短信发送次数限制
   "login_err_times" : 4,                                                 //登录错误次数限制
   "reply_interval"  : 5 * 60 * 1000,                                     //5分钟之内不能回复两次

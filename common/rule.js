@@ -3,12 +3,20 @@
 var tools = require("./tools");
 var rules = [{
   "message": "请注意荤素搭配哦",
-  "weight": 0.5,
+  "weight": 0.8,
   "action": function(){}
 }, {
   "message": "请少吃油炸",
-  "weight": 0.4,
-  "action": function(){}
+  "weight": 0.8,
+  "action": function(){
+    for(var d of this.data) {
+      if(d.keywords.indexOf("鸡") > -1) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  }
 }, {
   "message": "您还可以添加一个主食",
   "weight": 0.4,
@@ -24,7 +32,8 @@ var rules = [{
 }, {
   "message": "您不需要点一盘凉菜吗?",
   "weight": 0.2,
-  "action": function(){}
+  "action": function(){
+  }
 }, {
   "message": "再点一盘花生吧",
   "weight": 0.4,
@@ -57,14 +66,14 @@ Rule.prototype.checkRule = function(){
     }
   }
 
-  if(tools.randomTrue(0.5)) {
+  if(tools.randomTrue(0.1)) {
     this.info.message = "";
   }
 };
 
 Rule.prototype.signMessage = function(message, weight) {
   if(tools.randomTrue(weight)) {
-    this.message.message = message;
+    this.info.message = message;
   }
 };
 

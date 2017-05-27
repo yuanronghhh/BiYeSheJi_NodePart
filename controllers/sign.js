@@ -325,7 +325,7 @@ exports.updatePass = function (req, res, next) {
 };
 
 exports.resetPass = function (req, res, next) {
-  var form = signForm(req.body || req.query);
+  var form = signForm(req.body);
   form.resetPass();
   if(!form.is_valid){
     return res.status(403).json(form.error);

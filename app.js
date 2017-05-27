@@ -40,7 +40,6 @@ app.use(session({
   secret: config.session_secret,
 }));
 
-// app.use(auth.isPhoneBrowser);
 app.use(auth.authUser);
 app.use(auth.blocked);
 app.use('/', route);

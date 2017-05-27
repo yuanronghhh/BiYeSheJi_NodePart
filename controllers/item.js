@@ -13,7 +13,7 @@ var debug      = require('debug')("controllers/item");
  */
 exports.createItem = function (req, res, next) {
   var user = req.session.user;
-  var form = itemForm(req.body || req.query);
+  var form = itemForm(req.body);
   var ep   = new eventproxy();
   form.createItem();
   if(!form.is_valid){
@@ -87,7 +87,7 @@ exports.getGuessLike = function(req, res, next){
   var rdm = Number(tools.getRandomVcode(1));
   var wh = {
     "$or": [
-      {"collect_count": { "$gte": rdm }},
+      {"comment_count": { "$gte": rdm }},
       {"up": { "$gte": rdm }}
     ]
   };
@@ -151,7 +151,7 @@ function hotItems(req, res, next) {
   var rdm = Number(tools.getRandomVcode(10));
   var wh = {
     "$or": [
-      {"collect_count": { "$gte": rdm }},
+      {"comment_count": { "$gte": rdm }},
       {"up": { "$gte":  rdm }}
     ],
   };

@@ -15,10 +15,12 @@ UserForm.prototype.create = function (){
 
 UserForm.prototype.update = function (){
   var attr = [
-    "name",
+    "name"
   ]
   if(this.data.picture_url){
     attr.push("picture_url");
+  } else {
+    this.cleaned_data.picture_url = "";
   }
   if(this.data.phone_number) {
     attr.push("phone_number");

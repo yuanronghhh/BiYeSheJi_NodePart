@@ -11,11 +11,11 @@ var attrs      = [
   "keywords",
   "description",
   "price",
+  "comment_count",
   "create_at",
   "update_at",
   "up",
-  "type",
-  "collect_count"
+  "type"
 ];
 
 exports.createItem = function(data, cb){

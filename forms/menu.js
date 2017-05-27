@@ -11,9 +11,15 @@ function MenuForm(data){
 }
 
 MenuForm.prototype.createMenu = function(){
-  var dt = JSON.parse(this.data);
+  if(!this.data.remark) {
+    this.cleaned_data.remark = '';
+  } else {
+    this.cleaned_data.remark = this.data.remark;
+  }
+
+  var dt = JSON.parse(this.data.data);
   if(Array.isArray(dt)) {
-    this.cleaned_data = dt;
+    this.cleaned_data.content = dt;
   } else {
     this.error["message"] = "数据格式不正确";
     this.is_valid = false;

@@ -11,7 +11,7 @@ var _          = require('lodash');
  */
 exports.createRest = function (req, res, next) {
   var user = req.session.user;
-  var form = restForm(req.body || req.query);
+  var form = restForm(req.body);
   var ep   = new eventproxy();
   form.createRest();
   if(!form.is_valid){
@@ -58,7 +58,6 @@ exports.getRest = function (req, res, next) {
   }
 
   wh["user_id"] = user.id;
-  debugger;
   Rest.getRestByQuery(user, wh, function(err, rest){
     debug("getRest: rest --> ", JSON.stringify(rest));
     if(err){

@@ -8,7 +8,7 @@ exports.genCookie = function(user, res){
   var auth_token = user.id + '$$$$';
   var opts = {
     path: '/',
-    maxAge: 1000 * 60 * 60 * 24 * 10, //10天
+    maxAge: 1000 * 60 * 60 * 24 * 1, //1天
     signed: true,
     httpOnly: false
   };
@@ -99,14 +99,14 @@ exports.blocked = function(req, res ,next){
   return next();
 };
 
-exports.isPhoneBrowser = function(req, res, next){
+exports.isPCBrowser = function(req, res, next){
   var deviceAgent = req.headers["user-agent"];
   var agentID = deviceAgent.match(/(iPhone|iPod|iPad|Android)/);
   if(agentID && agentID !== ''){
-    return next();
+    return res.status(403).json({
+      "message":'请使用电脑端浏览器登录!'
+    });
   }
 
-  return res.status(403).json({
-    "message":'手机浏览可以获得最佳体验哦!'
-  });
+  return next();
 };

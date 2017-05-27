@@ -14,7 +14,7 @@ function ItemModel(){
     "picture_url"    : {"type": Connection.STRING},                   // 图片
     "price"          : {"type": Connection.FLOAT},
     "status"         : {"type": Connection.INTEGER, defaultValue: 0}, // 0,未激活,1已经激活, 具体见config/config.js
-    "collect_count"  : {"type": Connection.INTEGER, defaultValue: 0},
+    "comment_count"  : {"type": Connection.INTEGER, defaultValue: 0},
     "up"             : {"type": Connection.INTEGER, defaultValue: 0}, // 点击次数
     "create_at"      : {"type": Connection.DATE, defaultValue: Connection.NOW},
     "update_at"      : {"type": Connection.DATE, defaultValue: Connection.NOW}

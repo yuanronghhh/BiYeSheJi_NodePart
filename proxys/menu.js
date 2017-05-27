@@ -17,7 +17,7 @@ exports.createMenu = function(user, menu, cb){
     "total": 0
   };
 
-  for(var d of menu) {
+  for(var d of menu.content) {
     data["total"] += d.price;
   }
 
@@ -25,9 +25,15 @@ exports.createMenu = function(user, menu, cb){
     return cb('', "您的余额不足以购买");
   }
 
+  user.money -= data.total;
+
+  user.save().then(function(){}).catch(cb);
+
   data["create_by"] = user.id;
+  data["user_name"] = user.name;
   data["status"] = 0;
-  data["content"] = JSON.stringify(menu);
+  data["content"] = JSON.stringify(menu.content);
+  data["remark"] = menu.remark;
 
   Menu.create(data).then(function(){
     cb('');
@@ -76,6 +82,8 @@ exports.getMenus = function(user, wh, cb) {
 function deleteMenus(user, wh, cb){
   Menu.destroy({
     where: wh
+  }).then(function(user) {
+    cb('');
   }).catch(cb);
 }
 exports.deleteMenus = deleteMenus;
@@ -93,6 +101,24 @@ exports.changeBlock = function(menu, cb) {
   } else {
     menu.status = 1;
   }
+  menu.save().catch(cb);
+  return cb('');
+};
+
+exports.finishMenu = function(menu, cb){
+  menu.status = 2;
+  menu.save().catch(cb);
+  return cb('');
+};
+
+exports.revertMenu = function(menu, cb){
+  menu.status = 4;
+  menu.save().catch(cb);
+  return cb('');
+};
+
+exports.admitRevert = function(menu, cb){
+  menu.status = 5;
   menu.save().catch(cb);
   return cb('');
 };
