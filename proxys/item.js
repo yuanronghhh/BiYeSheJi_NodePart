@@ -65,8 +65,9 @@ exports.getItemByName = function(name, cb){
 exports.activeItem = function(item, cb){
   item.status    = config.status.activated;
   item.update_at = Date(Date.now());
-  item.save().catch(cb);
-  return cb("");
+  item.save().then(function(){
+    cb("");
+  }).catch(cb);
 };
 
 function getItemsByQuery(user, wh, order, opt, cb) {
@@ -131,8 +132,9 @@ exports.changeBlock = function(item, cb) {
     item.status = config.status.activated;
     item.update_at = Date(Date.now());
   }
-  item.save().catch(cb);
-  return cb("");
+  item.save().then(function(){
+    cb("");
+  }).catch(cb);
 };
 
 exports.search = function(key, cb) {

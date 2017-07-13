@@ -58,8 +58,9 @@ exports.getMenuByName = function(name, cb){
 exports.activeMenu = function(menu, cb){
   menu.status    = 1;
   menu.update_at = Date(Date.now());
-  menu.save().catch(cb);
-  return cb('');
+  menu.save().then(function(){
+    cb('');
+  }).catch(cb);
 };
 
 exports.getMenus = function(user, wh, cb) {
@@ -101,24 +102,28 @@ exports.changeBlock = function(menu, cb) {
   } else {
     menu.status = 1;
   }
-  menu.save().catch(cb);
-  return cb('');
+  menu.save().then(function(){
+    cb('');
+  }).catch(cb);
 };
 
 exports.finishMenu = function(menu, cb){
   menu.status = 2;
-  menu.save().catch(cb);
-  return cb('');
+  menu.save().then(function(){
+    cb("");
+  }).catch(cb);
 };
 
 exports.revertMenu = function(menu, cb){
   menu.status = 4;
-  menu.save().catch(cb);
-  return cb('');
+  menu.save().then(function(){
+    cb('');
+  }).catch(cb);
 };
 
 exports.admitRevert = function(menu, cb){
   menu.status = 5;
-  menu.save().catch(cb);
-  return cb('');
+  menu.save().then(function(){
+    cb('');
+  }).catch(cb);
 };

@@ -115,15 +115,17 @@ exports.getUserByQuery = getUserByQuery;
 exports.activeUser = function(user, cb){
   user.status    = config.status.activated;
   user.update_at = Date(Date.now());
-  user.save().catch(cb);
-  return cb('');
+  user.save().then(function(){
+    cb('');
+  }).catch(cb);
 };
 
 exports.updateUser = function(user, data, cb) {
   _.merge(data, {update_at: Date(Date.now())});
 
-  user.update(data).catch(cb);
-  return cb('');
+  user.update(data).then(function(){
+    cb('');
+  }).catch(cb);
 }
 
 exports.checkDeActive = function(user) {
@@ -142,8 +144,9 @@ exports.changePassword = function(user, pass_hash, cb){
 
   user.update_at = Date(Date.now());
   user.password = pass_hash;
-  user.save().catch(cb);
-  return cb('');
+  user.save().then(function(){
+    cb('');
+  }).catch(cb);
 };
 
 exports.getUserInfo = function (info, user) {
